@@ -1,0 +1,1707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CuriousToSolve — Structured Thinking for Complex Problems</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ===================== RESET & BASE ===================== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: #F7F6F2;
+  color: #0D1B2A;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* ===================== CUSTOM CURSOR ===================== */
+#cursor {
+  width: 12px; height: 12px;
+  background: #E85D04;
+  border-radius: 50%;
+  position: fixed; top: 0; left: 0;
+  pointer-events: none; z-index: 9999;
+  transform: translate(-50%,-50%);
+  transition: transform 0.1s ease, width 0.2s, height 0.2s, background 0.2s;
+}
+#cursor-ring {
+  width: 40px; height: 40px;
+  border: 1.5px solid rgba(232,93,4,0.4);
+  border-radius: 50%;
+  position: fixed; top: 0; left: 0;
+  pointer-events: none; z-index: 9998;
+  transform: translate(-50%,-50%);
+  transition: transform 0.18s ease, width 0.25s, height 0.25s, border-color 0.2s;
+}
+body:has(a:hover) #cursor, body:has(button:hover) #cursor { width: 20px; height: 20px; background: #0D1B2A; }
+body:has(a:hover) #cursor-ring, body:has(button:hover) #cursor-ring { width: 60px; height: 60px; border-color: rgba(13,27,42,0.3); }
+
+/* ===================== CSS VARIABLES ===================== */
+:root {
+  --navy: #0D1B2A;
+  --navy-mid: #162236;
+  --navy-light: #1E3A5F;
+  --orange: #E85D04;
+  --orange-light: #F4A261;
+  --cream: #F7F6F2;
+  --cream-dark: #EDEAE0;
+  --text-muted: #6B7280;
+  --border: rgba(13,27,42,0.1);
+  --shadow: 0 4px 24px rgba(13,27,42,0.08);
+  --shadow-lg: 0 20px 60px rgba(13,27,42,0.12);
+}
+
+/* ===================== TYPOGRAPHY ===================== */
+h1, h2, h3 { font-family: 'Playfair Display', serif; line-height: 1.15; }
+h1 { font-size: clamp(2.8rem, 6vw, 5.5rem); font-weight: 900; }
+h2 { font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 700; }
+h3 { font-size: clamp(1.2rem, 2vw, 1.6rem); font-weight: 700; }
+p { line-height: 1.75; color: #374151; }
+.mono { font-family: 'DM Mono', monospace; }
+
+/* ===================== NAVIGATION ===================== */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: rgba(247,246,242,0.92);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  transition: all 0.3s;
+}
+nav.scrolled { background: rgba(13,27,42,0.97); border-bottom-color: rgba(255,255,255,0.08); }
+nav.scrolled .nav-logo, nav.scrolled .nav-link { color: #fff; }
+nav.scrolled .nav-cta { background: var(--orange); }
+.nav-inner {
+  max-width: 1280px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.1rem 2rem;
+}
+.nav-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.25rem; font-weight: 900;
+  color: var(--navy); text-decoration: none;
+  letter-spacing: -0.02em;
+}
+.nav-logo span { color: var(--orange); }
+.nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
+.nav-link {
+  text-decoration: none; color: var(--navy);
+  font-weight: 500; font-size: 0.9rem;
+  letter-spacing: 0.02em; position: relative;
+  transition: color 0.2s;
+}
+.nav-link::after {
+  content: ''; position: absolute; bottom: -3px; left: 0; right: 0;
+  height: 2px; background: var(--orange);
+  transform: scaleX(0); transition: transform 0.25s;
+}
+.nav-link:hover::after { transform: scaleX(1); }
+.nav-cta {
+  background: var(--navy); color: #fff;
+  padding: 0.6rem 1.4rem; border-radius: 2px;
+  font-weight: 600; font-size: 0.85rem;
+  text-decoration: none; letter-spacing: 0.05em;
+  text-transform: uppercase; transition: background 0.2s;
+}
+.nav-cta:hover { background: var(--orange); }
+.hamburger { display: none; flex-direction: column; gap: 5px; cursor: none; background: none; border: none; }
+.hamburger span { width: 24px; height: 2px; background: var(--navy); transition: all 0.3s; }
+nav.scrolled .hamburger span { background: #fff; }
+
+/* ===================== HERO ===================== */
+#home {
+  min-height: 100vh;
+  background: var(--navy);
+  position: relative; overflow: hidden;
+  display: flex; align-items: center;
+}
+.hero-grid-bg {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+.hero-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.15;
+  animation: float 8s ease-in-out infinite;
+}
+.hero-orb-1 { width: 600px; height: 600px; background: var(--orange); right: -100px; top: -100px; }
+.hero-orb-2 { width: 400px; height: 400px; background: #1E3A5F; left: 10%; bottom: 10%; animation-delay: -4s; }
+@keyframes float { 0%,100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-30px) scale(1.05); } }
+
+.hero-content {
+  max-width: 1280px; margin: 0 auto;
+  padding: 8rem 2rem 6rem;
+  position: relative; z-index: 1;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;
+}
+.hero-label {
+  display: inline-flex; align-items: center; gap: 0.6rem;
+  background: rgba(232,93,4,0.15); border: 1px solid rgba(232,93,4,0.3);
+  color: var(--orange-light); padding: 0.4rem 1rem;
+  border-radius: 2px; font-size: 0.8rem; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  margin-bottom: 1.5rem;
+}
+.hero-label::before { content: '●'; font-size: 0.5rem; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+.hero-title { color: #fff; margin-bottom: 1.5rem; }
+.hero-title em { color: var(--orange); font-style: italic; }
+.hero-subtitle { color: rgba(255,255,255,0.6); font-size: 1.15rem; line-height: 1.7; margin-bottom: 2.5rem; max-width: 480px; }
+.hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+.btn-primary {
+  background: var(--orange); color: #fff;
+  padding: 1rem 2rem; border-radius: 2px;
+  font-weight: 600; font-size: 0.95rem;
+  text-decoration: none; letter-spacing: 0.04em;
+  transition: all 0.2s; display: inline-flex; align-items: center; gap: 0.5rem;
+}
+.btn-primary:hover { background: #d44f00; transform: translateY(-2px); }
+.btn-outline {
+  background: transparent; color: #fff;
+  padding: 1rem 2rem; border-radius: 2px;
+  border: 1px solid rgba(255,255,255,0.3);
+  font-weight: 500; font-size: 0.95rem;
+  text-decoration: none; letter-spacing: 0.04em;
+  transition: all 0.2s; display: inline-flex; align-items: center; gap: 0.5rem;
+}
+.btn-outline:hover { border-color: var(--orange); color: var(--orange); }
+.hero-stats { display: flex; flex-direction: column; gap: 1.5rem; }
+.stat-card {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 1.5rem 2rem; border-radius: 4px;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s;
+}
+.stat-card:hover { background: rgba(255,255,255,0.08); transform: translateX(8px); }
+.stat-number { font-family: 'Playfair Display', serif; font-size: 2.5rem; color: var(--orange); font-weight: 900; }
+.stat-label { color: rgba(255,255,255,0.6); font-size: 0.9rem; margin-top: 0.3rem; }
+.hero-scroll {
+  position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+  color: rgba(255,255,255,0.4); font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase;
+}
+.scroll-line { width: 1px; height: 40px; background: rgba(255,255,255,0.2); animation: scrollPulse 2s infinite; }
+@keyframes scrollPulse { 0%,100% { opacity:1; height:40px; } 50% { opacity:0.3; height:20px; } }
+
+/* ===================== SECTION BASICS ===================== */
+section { padding: 6rem 2rem; }
+.container { max-width: 1280px; margin: 0 auto; }
+.section-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.75rem; letter-spacing: 0.15em;
+  text-transform: uppercase; color: var(--orange);
+  margin-bottom: 0.8rem;
+  display: flex; align-items: center; gap: 0.8rem;
+}
+.section-label::before { content: ''; width: 30px; height: 1px; background: var(--orange); }
+.section-title { margin-bottom: 1rem; }
+.section-subtitle { color: var(--text-muted); font-size: 1.1rem; max-width: 600px; line-height: 1.7; margin-bottom: 3rem; }
+
+/* ===================== MARQUEE ===================== */
+.marquee-wrap {
+  background: var(--orange);
+  padding: 0.8rem 0;
+  overflow: hidden;
+}
+.marquee-track {
+  display: flex; gap: 3rem;
+  animation: marquee 30s linear infinite;
+  white-space: nowrap;
+}
+.marquee-track span {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.75rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: #fff;
+  opacity: 0.85;
+  flex-shrink: 0;
+}
+.marquee-track span.dot { opacity: 0.4; }
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* ===================== APPROACH / PHILOSOPHY ===================== */
+#approach { background: var(--cream); }
+.approach-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+.approach-visual {
+  position: relative; height: 500px;
+}
+.approach-card {
+  position: absolute;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  transition: all 0.4s;
+}
+.approach-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-4px); }
+.approach-card-1 { top: 0; left: 0; width: 62%; }
+.approach-card-2 { top: 45%; right: 0; width: 58%; }
+.approach-card-3 { bottom: 0; left: 10%; width: 50%; }
+.approach-card-icon { font-size: 1.5rem; margin-bottom: 0.8rem; }
+.approach-card h4 { font-family: 'Playfair Display', serif; font-size: 1.1rem; margin-bottom: 0.5rem; }
+.approach-card p { font-size: 0.875rem; color: var(--text-muted); line-height: 1.6; }
+.approach-card .tag {
+  display: inline-block; background: rgba(232,93,4,0.1);
+  color: var(--orange); font-size: 0.7rem;
+  font-family: 'DM Mono', monospace; letter-spacing: 0.08em;
+  padding: 0.2rem 0.6rem; border-radius: 2px; margin-bottom: 0.8rem;
+}
+.approach-steps { display: flex; flex-direction: column; gap: 2rem; }
+.approach-step { display: flex; gap: 1.5rem; align-items: flex-start; }
+.step-num {
+  font-family: 'DM Mono', monospace; font-size: 0.75rem;
+  color: var(--orange); min-width: 30px; padding-top: 0.2rem;
+  letter-spacing: 0.1em;
+}
+.step-content h4 { font-family: 'Playfair Display', serif; font-size: 1.15rem; margin-bottom: 0.4rem; }
+.step-content p { font-size: 0.9rem; color: var(--text-muted); }
+
+/* ===================== TOOLS SECTION ===================== */
+#tools { background: var(--navy); }
+#tools .section-title { color: #fff; }
+#tools .section-subtitle { color: rgba(255,255,255,0.5); }
+.tools-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.08); }
+.tool-card {
+  background: var(--navy);
+  padding: 2.5rem;
+  position: relative; overflow: hidden;
+  cursor: none; transition: all 0.3s;
+}
+.tool-card::before {
+  content: ''; position: absolute;
+  bottom: 0; left: 0; right: 0; height: 3px;
+  background: var(--orange);
+  transform: scaleX(0); transition: transform 0.3s;
+}
+.tool-card:hover { background: var(--navy-mid); }
+.tool-card:hover::before { transform: scaleX(1); }
+.tool-icon {
+  width: 52px; height: 52px; border-radius: 4px;
+  background: rgba(232,93,4,0.15); border: 1px solid rgba(232,93,4,0.2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem; margin-bottom: 1.5rem;
+  transition: background 0.3s;
+}
+.tool-card:hover .tool-icon { background: rgba(232,93,4,0.25); }
+.tool-card h3 { color: #fff; font-size: 1.2rem; margin-bottom: 0.7rem; }
+.tool-card p { color: rgba(255,255,255,0.45); font-size: 0.875rem; line-height: 1.65; margin-bottom: 1.5rem; }
+.tool-tag {
+  display: inline-block; border: 1px solid rgba(232,93,4,0.3);
+  color: var(--orange-light); padding: 0.2rem 0.7rem;
+  border-radius: 2px; font-size: 0.7rem;
+  font-family: 'DM Mono', monospace; letter-spacing: 0.08em;
+}
+.tool-arrow {
+  position: absolute; top: 2rem; right: 2rem;
+  color: rgba(255,255,255,0.2); font-size: 1.2rem;
+  transition: all 0.3s;
+}
+.tool-card:hover .tool-arrow { color: var(--orange); transform: translate(4px, -4px); }
+
+/* ===================== PROBLEM SOLVER INTERACTIVE ===================== */
+#solver { background: var(--cream-dark); }
+.solver-wrapper {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start;
+}
+.solver-intro .section-title { margin-bottom: 1.5rem; }
+.solver-features { display: flex; flex-direction: column; gap: 1rem; margin-top: 2rem; }
+.solver-feature {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 0.8rem; border-radius: 4px;
+  transition: background 0.2s;
+}
+.solver-feature:hover { background: rgba(232,93,4,0.05); }
+.solver-feature-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--orange); flex-shrink: 0; }
+.solver-feature span { font-size: 0.9rem; color: #374151; font-weight: 500; }
+
+.solver-ui {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+.solver-header {
+  background: var(--navy); padding: 1rem 1.5rem;
+  display: flex; align-items: center; gap: 0.6rem;
+}
+.solver-dot { width: 10px; height: 10px; border-radius: 50%; }
+.solver-dot-r { background: #FF5F57; }
+.solver-dot-y { background: #FFBD2E; }
+.solver-dot-g { background: #28CA41; }
+.solver-header-title { color: rgba(255,255,255,0.6); font-size: 0.8rem; font-family: 'DM Mono', monospace; margin-left: auto; }
+.solver-body { padding: 1.5rem; }
+.solver-step { display: none; animation: fadeInUp 0.4s ease; }
+.solver-step.active { display: block; }
+@keyframes fadeInUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+.step-indicator {
+  display: flex; gap: 0.5rem; margin-bottom: 1.5rem;
+}
+.step-pip {
+  height: 3px; flex: 1; border-radius: 2px;
+  background: rgba(13,27,42,0.1); transition: background 0.4s;
+}
+.step-pip.done { background: var(--orange); }
+.step-pip.active { background: var(--navy); }
+.solver-step-label {
+  font-family: 'DM Mono', monospace; font-size: 0.7rem;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--orange); margin-bottom: 0.5rem;
+}
+.solver-step h4 { font-family: 'Playfair Display', serif; font-size: 1.25rem; margin-bottom: 1rem; }
+.solver-input {
+  width: 100%; padding: 0.9rem 1rem;
+  border: 1.5px solid var(--border); border-radius: 4px;
+  font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
+  outline: none; transition: border-color 0.2s; resize: vertical;
+  background: var(--cream);
+}
+.solver-input:focus { border-color: var(--navy); }
+.solver-result {
+  background: var(--cream); border: 1px solid var(--border);
+  border-radius: 4px; padding: 1rem;
+  font-size: 0.875rem; line-height: 1.7;
+  color: #374151; margin-bottom: 1rem;
+}
+.solver-result strong { color: var(--navy); }
+.why-row {
+  display: flex; gap: 0.8rem; align-items: flex-start;
+  margin-bottom: 0.8rem;
+}
+.why-num {
+  font-family: 'DM Mono', monospace; font-size: 0.7rem;
+  background: var(--navy); color: #fff;
+  width: 22px; height: 22px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 0.2rem;
+}
+.why-text {
+  flex: 1; padding: 0.6rem 0.8rem;
+  border: 1px solid var(--border); border-radius: 4px;
+  font-size: 0.85rem; background: #fff; cursor: none;
+  transition: border-color 0.2s;
+}
+.why-text:focus { outline: none; border-color: var(--orange); }
+.solver-btn {
+  width: 100%; padding: 0.9rem;
+  background: var(--navy); color: #fff;
+  border: none; border-radius: 4px;
+  font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+  font-weight: 600; cursor: none;
+  transition: background 0.2s; margin-top: 1rem;
+  display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+}
+.solver-btn:hover { background: var(--orange); }
+.solver-back {
+  background: transparent; border: 1px solid var(--border);
+  color: var(--text-muted);
+}
+.solver-back:hover { background: var(--cream); color: var(--navy); }
+.solver-nav { display: flex; gap: 0.8rem; }
+.solver-nav .solver-btn { flex: 1; }
+.improvement-list { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1rem; }
+.improvement-item {
+  display: flex; align-items: flex-start; gap: 0.8rem;
+  padding: 0.8rem; background: var(--cream); border-radius: 4px;
+  border-left: 3px solid var(--orange);
+}
+.improvement-item span { font-size: 0.85rem; line-height: 1.6; color: #374151; }
+
+/* ===================== CASE STUDIES ===================== */
+#cases { background: var(--cream); }
+.cases-filter {
+  display: flex; gap: 0.8rem; flex-wrap: wrap; margin-bottom: 2.5rem;
+}
+.filter-btn {
+  padding: 0.5rem 1.2rem; border-radius: 2px;
+  border: 1.5px solid var(--border);
+  background: transparent; font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem; font-weight: 500; cursor: none;
+  transition: all 0.2s; color: var(--text-muted);
+}
+.filter-btn.active, .filter-btn:hover { border-color: var(--navy); background: var(--navy); color: #fff; }
+.cases-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; }
+.case-card {
+  background: #fff; border: 1px solid var(--border);
+  border-radius: 4px; overflow: hidden;
+  transition: all 0.35s; cursor: none;
+}
+.case-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-6px); }
+.case-card-top { background: var(--navy); padding: 1.5rem; position: relative; }
+.case-category {
+  font-family: 'DM Mono', monospace; font-size: 0.7rem;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--orange-light); margin-bottom: 0.6rem;
+}
+.case-card-top h3 { color: #fff; font-size: 1.15rem; line-height: 1.4; }
+.case-impact {
+  position: absolute; top: 1rem; right: 1rem;
+  background: rgba(232,93,4,0.2); border: 1px solid rgba(232,93,4,0.3);
+  color: var(--orange-light); padding: 0.2rem 0.6rem;
+  border-radius: 2px; font-size: 0.7rem; font-family: 'DM Mono', monospace;
+}
+.case-body { padding: 1.5rem; }
+.case-meta { display: flex; flex-direction: column; gap: 1rem; }
+.case-row { display: flex; gap: 0.8rem; }
+.case-label {
+  font-family: 'DM Mono', monospace; font-size: 0.65rem;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--orange); min-width: 80px; padding-top: 2px;
+}
+.case-value { font-size: 0.875rem; color: #374151; line-height: 1.5; }
+.case-footer {
+  border-top: 1px solid var(--border); padding: 1rem 1.5rem;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.case-tools { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+.case-tool-tag {
+  font-size: 0.7rem; font-family: 'DM Mono', monospace;
+  background: rgba(13,27,42,0.06); color: var(--text-muted);
+  padding: 0.2rem 0.5rem; border-radius: 2px;
+}
+.case-link { color: var(--orange); font-size: 0.85rem; font-weight: 600; text-decoration: none; }
+.case-link:hover { text-decoration: underline; }
+
+/* ===================== BLOG ===================== */
+#blog { background: var(--navy); }
+#blog .section-label { color: var(--orange-light); }
+#blog .section-title { color: #fff; }
+#blog .section-subtitle { color: rgba(255,255,255,0.5); }
+.blog-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 1.5px; background: rgba(255,255,255,0.08); }
+.blog-card {
+  background: var(--navy); padding: 2rem;
+  cursor: none; transition: background 0.25s;
+  position: relative; overflow: hidden;
+}
+.blog-card::after {
+  content: ''; position: absolute;
+  inset: 0; background: linear-gradient(135deg, rgba(232,93,4,0.05), transparent);
+  opacity: 0; transition: opacity 0.3s;
+}
+.blog-card:hover { background: #162236; }
+.blog-card:hover::after { opacity: 1; }
+.blog-card-featured { grid-row: span 2; }
+.blog-cat {
+  font-family: 'DM Mono', monospace; font-size: 0.7rem;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--orange); margin-bottom: 0.8rem;
+}
+.blog-card h3 { color: #fff; line-height: 1.4; margin-bottom: 0.8rem; }
+.blog-card-featured h3 { font-size: 1.6rem; }
+.blog-card p { color: rgba(255,255,255,0.45); font-size: 0.85rem; line-height: 1.65; margin-bottom: 1.5rem; }
+.blog-card-featured p { font-size: 0.95rem; }
+.blog-meta { display: flex; align-items: center; gap: 1rem; }
+.blog-date { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: rgba(255,255,255,0.3); }
+.blog-read {
+  color: var(--orange-light); font-size: 0.8rem; font-weight: 600;
+  text-decoration: none; letter-spacing: 0.04em;
+  transition: color 0.2s; margin-left: auto;
+}
+.blog-read:hover { color: var(--orange); }
+.blog-cta { margin-top: 2rem; text-align: center; }
+
+/* ===================== SUBSCRIBE ===================== */
+#subscribe { background: var(--orange); padding: 5rem 2rem; }
+.subscribe-inner { max-width: 600px; margin: 0 auto; text-align: center; }
+#subscribe .section-label { color: rgba(255,255,255,0.7); justify-content: center; }
+#subscribe .section-label::before { background: rgba(255,255,255,0.5); }
+#subscribe h2 { color: #fff; margin-bottom: 1rem; }
+#subscribe p { color: rgba(255,255,255,0.8); margin-bottom: 2rem; }
+.subscribe-form { display: flex; gap: 0; max-width: 480px; margin: 0 auto; }
+.subscribe-form input {
+  flex: 1; padding: 0.95rem 1.2rem;
+  border: none; outline: none;
+  font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: #fff; border-radius: 2px 0 0 2px;
+}
+.subscribe-form input::placeholder { color: rgba(255,255,255,0.5); }
+.subscribe-form button {
+  padding: 0.95rem 1.5rem;
+  background: var(--navy); color: #fff;
+  border: none; cursor: none;
+  font-family: 'DM Sans', sans-serif; font-weight: 600;
+  font-size: 0.9rem; letter-spacing: 0.04em;
+  border-radius: 0 2px 2px 0; transition: background 0.2s;
+  white-space: nowrap;
+}
+.subscribe-form button:hover { background: #0a1520; }
+.subscribe-note { font-size: 0.78rem; color: rgba(255,255,255,0.5); margin-top: 0.8rem; }
+
+/* ===================== ABOUT ===================== */
+#about { background: var(--cream); }
+.about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center; }
+.about-avatar {
+  width: 200px; height: 200px; border-radius: 50%;
+  background: var(--navy);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 5rem; margin-bottom: 2rem;
+  border: 4px solid var(--orange);
+  box-shadow: 0 0 0 8px rgba(232,93,4,0.1);
+}
+.about-credentials { display: flex; flex-direction: column; gap: 0.8rem; margin-top: 2rem; }
+.credential {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 0.8rem 1rem; background: #fff;
+  border: 1px solid var(--border); border-radius: 4px;
+}
+.credential-icon { font-size: 1.2rem; }
+.credential span { font-size: 0.875rem; font-weight: 500; color: var(--navy); }
+.about-quote {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem; line-height: 1.5;
+  color: var(--navy); font-style: italic;
+  border-left: 4px solid var(--orange);
+  padding-left: 1.5rem; margin: 2rem 0;
+}
+.about-text { margin-bottom: 1.5rem; }
+
+/* ===================== FOOTER ===================== */
+footer { background: #080f18; padding: 4rem 2rem 2rem; }
+.footer-inner { max-width: 1280px; margin: 0 auto; }
+.footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; margin-bottom: 3rem; }
+.footer-brand h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem; color: #fff; margin-bottom: 0.8rem;
+}
+.footer-brand h3 span { color: var(--orange); }
+.footer-brand p { color: rgba(255,255,255,0.35); font-size: 0.875rem; line-height: 1.7; }
+.footer-col h4 {
+  font-family: 'DM Mono', monospace; font-size: 0.7rem;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: rgba(255,255,255,0.4); margin-bottom: 1.2rem;
+}
+.footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+.footer-col ul li a {
+  color: rgba(255,255,255,0.5); text-decoration: none;
+  font-size: 0.875rem; transition: color 0.2s;
+}
+.footer-col ul li a:hover { color: var(--orange); }
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding-top: 1.5rem;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.footer-bottom p { color: rgba(255,255,255,0.25); font-size: 0.8rem; }
+.footer-badge {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-family: 'DM Mono', monospace; font-size: 0.7rem;
+  color: rgba(255,255,255,0.25); letter-spacing: 0.05em;
+}
+.footer-badge::before { content: '●'; color: #28CA41; font-size: 0.5rem; animation: pulse 2s infinite; }
+
+/* ===================== MOBILE NAV ===================== */
+.mobile-menu {
+  display: none; position: fixed; inset: 0;
+  background: var(--navy); z-index: 999;
+  flex-direction: column; align-items: center; justify-content: center; gap: 2rem;
+}
+.mobile-menu.open { display: flex; }
+.mobile-menu a {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem; color: #fff; text-decoration: none;
+  transition: color 0.2s;
+}
+.mobile-menu a:hover { color: var(--orange); }
+.mobile-close {
+  position: absolute; top: 1.5rem; right: 2rem;
+  background: none; border: none; color: #fff;
+  font-size: 2rem; cursor: none;
+}
+
+/* ===================== ANIMATED COUNTER ===================== */
+.counter { display: inline-block; }
+
+/* ===================== SCROLL ANIMATIONS ===================== */
+.reveal {
+  opacity: 0; transform: translateY(30px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+
+/* ===================== SEARCH ===================== */
+.search-wrap { position: relative; margin-bottom: 2rem; }
+.search-input {
+  width: 100%; max-width: 460px;
+  padding: 0.9rem 1rem 0.9rem 3rem;
+  border: 1.5px solid var(--border); border-radius: 4px;
+  font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
+  background: #fff; outline: none; transition: border-color 0.2s;
+}
+.search-input:focus { border-color: var(--orange); }
+.search-icon {
+  position: absolute; left: 1rem; top: 50%;
+  transform: translateY(-50%); color: var(--text-muted); font-size: 1rem;
+}
+
+/* ===================== RESPONSIVE ===================== */
+@media (max-width: 900px) {
+  .hero-content { grid-template-columns: 1fr; }
+  .hero-stats { flex-direction: row; }
+  .stat-card { flex: 1; }
+  .approach-grid, .solver-wrapper, .about-grid { grid-template-columns: 1fr; }
+  .approach-visual { height: 300px; margin-bottom: 2rem; }
+  .blog-grid { grid-template-columns: 1fr; }
+  .blog-card-featured { grid-row: span 1; }
+  .footer-top { grid-template-columns: 1fr 1fr; }
+  .hamburger { display: flex; }
+  .nav-links { display: none; }
+}
+@media (max-width: 600px) {
+  section { padding: 4rem 1.2rem; }
+  .hero-stats { flex-direction: column; }
+  .footer-top { grid-template-columns: 1fr; }
+  .hero-actions { flex-direction: column; }
+  .subscribe-form { flex-direction: column; }
+  .subscribe-form input, .subscribe-form button { border-radius: 2px; }
+  .cases-grid { grid-template-columns: 1fr; }
+}
+
+/* ===================== FISHBONE DIAGRAM ===================== */
+.fishbone-wrapper {
+  background: #fff; border: 1px solid var(--border);
+  border-radius: 8px; padding: 2rem;
+  overflow-x: auto; margin-top: 1rem;
+}
+.fishbone-svg { width: 100%; min-width: 560px; height: 320px; }
+.fish-bone-line { stroke: var(--navy); stroke-width: 2; fill: none; }
+.fish-cause-line { stroke: rgba(13,27,42,0.3); stroke-width: 1.5; }
+.fish-head { fill: var(--orange); }
+.fish-label { font-family: 'DM Sans', sans-serif; font-size: 11px; fill: var(--navy); font-weight: 500; }
+.fish-cat-label { font-family: 'Playfair Display', serif; font-size: 13px; fill: var(--navy); font-weight: 700; }
+.fish-effect-label { font-family: 'Playfair Display', serif; font-size: 12px; fill: #fff; font-weight: 600; }
+
+/* ===================== PARETO ===================== */
+.pareto-wrapper {
+  background: #fff; border: 1px solid var(--border);
+  border-radius: 8px; padding: 1.5rem; margin-top: 1rem;
+}
+.pareto-bar-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.8rem; }
+.pareto-label { font-size: 0.8rem; color: var(--navy); min-width: 120px; font-weight: 500; }
+.pareto-bar-wrap { flex: 1; background: var(--cream-dark); border-radius: 2px; height: 20px; position: relative; overflow: hidden; }
+.pareto-bar { height: 100%; background: var(--navy); border-radius: 2px; transition: width 1s ease; }
+.pareto-bar.highlighted { background: var(--orange); }
+.pareto-pct { font-family: 'DM Mono', monospace; font-size: 0.75rem; color: var(--text-muted); min-width: 45px; }
+.pareto-cum { font-family: 'DM Mono', monospace; font-size: 0.75rem; color: var(--orange); min-width: 45px; }
+
+/* ===================== SIPOC ===================== */
+.sipoc-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+.sipoc-table th {
+  background: var(--navy); color: #fff;
+  padding: 0.8rem 0.6rem; font-size: 0.8rem;
+  font-family: 'DM Mono', monospace; letter-spacing: 0.08em;
+  text-transform: uppercase; text-align: left;
+}
+.sipoc-table th:first-child { border-radius: 4px 0 0 0; }
+.sipoc-table th:last-child { border-radius: 0 4px 0 0; }
+.sipoc-table td {
+  padding: 0.7rem 0.6rem; font-size: 0.8rem;
+  border-bottom: 1px solid var(--border); color: #374151;
+  vertical-align: top; line-height: 1.5;
+}
+.sipoc-table tr:nth-child(even) td { background: var(--cream); }
+.sipoc-table tr:hover td { background: rgba(232,93,4,0.04); }
+
+/* Tool tab system */
+.tool-tabs { display: flex; gap: 0; border-bottom: 2px solid var(--border); margin-bottom: 1.5rem; overflow-x: auto; }
+.tool-tab {
+  padding: 0.7rem 1.2rem; border: none; background: none;
+  font-family: 'DM Sans', sans-serif; font-size: 0.85rem;
+  font-weight: 500; color: var(--text-muted); cursor: none;
+  border-bottom: 2px solid transparent; margin-bottom: -2px;
+  transition: all 0.2s; white-space: nowrap;
+}
+.tool-tab.active { color: var(--navy); border-bottom-color: var(--orange); }
+.tool-tab-content { display: none; }
+.tool-tab-content.active { display: block; }
+</style>
+</head>
+<body>
+
+<!-- Custom Cursor -->
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-close" onclick="toggleMenu()">✕</button>
+  <a href="#home" onclick="toggleMenu()">Home</a>
+  <a href="#solver" onclick="toggleMenu()">Problem Solver</a>
+  <a href="#tools" onclick="toggleMenu()">Tools</a>
+  <a href="#cases" onclick="toggleMenu()">Case Studies</a>
+  <a href="#blog" onclick="toggleMenu()">Blog</a>
+  <a href="#about" onclick="toggleMenu()">About</a>
+</div>
+
+<!-- Navigation -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="#home" class="nav-logo">Curious<span>To</span>Solve</a>
+    <ul class="nav-links">
+      <li><a href="#solver" class="nav-link">Problem Solver</a></li>
+      <li><a href="#tools" class="nav-link">Tools</a></li>
+      <li><a href="#cases" class="nav-link">Case Studies</a></li>
+      <li><a href="#blog" class="nav-link">Blog</a></li>
+      <li><a href="#about" class="nav-link">About</a></li>
+      <li><a href="#subscribe" class="nav-cta">Subscribe</a></li>
+    </ul>
+    <button class="hamburger" onclick="toggleMenu()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ===================== HERO ===================== -->
+<section id="home">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+  <div class="hero-content">
+    <div class="hero-left">
+      <div class="hero-label">Six Sigma · Lean · Root Cause Analysis</div>
+      <h1 class="hero-title">Curious<br>to <em>Solve?</em></h1>
+      <p class="hero-subtitle">Learn how to break down complex problems and find root causes. A structured thinking platform for IT professionals, managers, and analytical minds.</p>
+      <div class="hero-actions">
+        <a href="#solver" class="btn-primary">Try Problem Solver →</a>
+        <a href="#cases" class="btn-outline">View Case Studies</a>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-card reveal">
+        <div class="stat-number"><span class="counter" data-target="47">0</span>+</div>
+        <div class="stat-label">Structured Problem-Solving Tools</div>
+      </div>
+      <div class="stat-card reveal reveal-delay-1">
+        <div class="stat-number"><span class="counter" data-target="120">0</span>+</div>
+        <div class="stat-label">Real-World Case Studies</div>
+      </div>
+      <div class="stat-card reveal reveal-delay-2">
+        <div class="stat-number"><span class="counter" data-target="15">0</span>K+</div>
+        <div class="stat-label">Problem Solvers in the Community</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- Marquee -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span>5 Why Analysis</span><span class="dot">◆</span>
+    <span>Fishbone Diagram</span><span class="dot">◆</span>
+    <span>Pareto Chart</span><span class="dot">◆</span>
+    <span>SIPOC Framework</span><span class="dot">◆</span>
+    <span>Root Cause Analysis</span><span class="dot">◆</span>
+    <span>Lean Thinking</span><span class="dot">◆</span>
+    <span>Six Sigma</span><span class="dot">◆</span>
+    <span>PDCA Cycle</span><span class="dot">◆</span>
+    <span>Control Charts</span><span class="dot">◆</span>
+    <span>DMAIC</span><span class="dot">◆</span>
+    <!-- duplicate for seamless loop -->
+    <span>5 Why Analysis</span><span class="dot">◆</span>
+    <span>Fishbone Diagram</span><span class="dot">◆</span>
+    <span>Pareto Chart</span><span class="dot">◆</span>
+    <span>SIPOC Framework</span><span class="dot">◆</span>
+    <span>Root Cause Analysis</span><span class="dot">◆</span>
+    <span>Lean Thinking</span><span class="dot">◆</span>
+    <span>Six Sigma</span><span class="dot">◆</span>
+    <span>PDCA Cycle</span><span class="dot">◆</span>
+    <span>Control Charts</span><span class="dot">◆</span>
+    <span>DMAIC</span><span class="dot">◆</span>
+  </div>
+</div>
+
+<!-- ===================== APPROACH ===================== -->
+<section id="approach">
+  <div class="container">
+    <div class="approach-grid">
+      <div class="approach-visual">
+        <div class="approach-card approach-card-1 reveal">
+          <span class="tag">Step 01</span>
+          <div class="approach-card-icon">🔍</div>
+          <h4>Define the Problem Precisely</h4>
+          <p>A well-defined problem is half solved. We start with clarity before jumping to solutions.</p>
+        </div>
+        <div class="approach-card approach-card-2 reveal reveal-delay-1">
+          <span class="tag">Step 02</span>
+          <div class="approach-card-icon">🌿</div>
+          <h4>Map Root Causes, Not Symptoms</h4>
+          <p>Surface-level fixes create more problems. Go deeper with structured root cause analysis.</p>
+        </div>
+        <div class="approach-card approach-card-3 reveal reveal-delay-2">
+          <span class="tag">Step 03</span>
+          <div class="approach-card-icon">⚡</div>
+          <h4>Implement & Sustain Improvements</h4>
+          <p>Solutions that stick. Measure, verify, and lock in the gains with control mechanisms.</p>
+        </div>
+      </div>
+      <div>
+        <div class="section-label">Our Philosophy</div>
+        <h2 class="section-title">Curiosity is the engine of all great problem solving</h2>
+        <p class="section-subtitle">We believe every problem has a root cause. The best professionals don't just fix issues — they build the thinking skills to prevent them.</p>
+        <div class="approach-steps">
+          <div class="approach-step reveal">
+            <div class="step-num">01</div>
+            <div class="step-content">
+              <h4>Structured Thinking Frameworks</h4>
+              <p>Six Sigma DMAIC, Lean principles, and systems thinking applied to real situations.</p>
+            </div>
+          </div>
+          <div class="approach-step reveal reveal-delay-1">
+            <div class="step-num">02</div>
+            <div class="step-content">
+              <h4>Data-Driven Decision Making</h4>
+              <p>Move from gut feelings to evidence. Learn to read data and derive meaningful insights.</p>
+            </div>
+          </div>
+          <div class="approach-step reveal reveal-delay-2">
+            <div class="step-num">03</div>
+            <div class="step-content">
+              <h4>Collaborative Problem Solving</h4>
+              <p>The best solutions emerge when diverse perspectives are applied through common frameworks.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== TOOLS HUB ===================== -->
+<section id="tools">
+  <div class="container">
+    <div class="section-label">Interactive Toolkit</div>
+    <h2 class="section-title" style="color:#fff;">Every tool a problem solver needs</h2>
+    <p class="section-subtitle">Industry-standard quality tools made interactive, visual, and immediately applicable to your real challenges.</p>
+    <div class="tools-grid">
+      <div class="tool-card reveal" onclick="scrollToSolver()">
+        <div class="tool-icon">❓</div>
+        <div class="tool-arrow">↗</div>
+        <h3>5 Why Analysis</h3>
+        <p>Drill down from symptom to root cause by asking "why" five times. Simple, powerful, and proven.</p>
+        <span class="tool-tag">Interactive</span>
+      </div>
+      <div class="tool-card reveal reveal-delay-1" onclick="showToolTab('fishbone')">
+        <div class="tool-icon">🐟</div>
+        <div class="tool-arrow">↗</div>
+        <h3>Fishbone Diagram</h3>
+        <p>Ishikawa's classic cause-and-effect diagram. Visualize all contributing factors at once.</p>
+        <span class="tool-tag">Visual</span>
+      </div>
+      <div class="tool-card reveal reveal-delay-2" onclick="showToolTab('pareto')">
+        <div class="tool-icon">📊</div>
+        <div class="tool-arrow">↗</div>
+        <h3>Pareto Analysis</h3>
+        <p>The 80/20 rule in action. Identify the vital few causes driving the majority of your problems.</p>
+        <span class="tool-tag">Data-Driven</span>
+      </div>
+      <div class="tool-card reveal" onclick="showToolTab('sipoc')">
+        <div class="tool-icon">🔄</div>
+        <div class="tool-arrow">↗</div>
+        <h3>SIPOC Framework</h3>
+        <p>Map your process end-to-end. Suppliers, Inputs, Process, Outputs, Customers — all in one view.</p>
+        <span class="tool-tag">Process Map</span>
+      </div>
+      <div class="tool-card reveal reveal-delay-1">
+        <div class="tool-icon">📋</div>
+        <div class="tool-arrow">↗</div>
+        <h3>DMAIC Roadmap</h3>
+        <p>Define → Measure → Analyze → Improve → Control. The Six Sigma backbone for lasting change.</p>
+        <span class="tool-tag">Six Sigma</span>
+      </div>
+      <div class="tool-card reveal reveal-delay-2">
+        <div class="tool-icon">🔁</div>
+        <div class="tool-arrow">↗</div>
+        <h3>PDCA Cycle</h3>
+        <p>Plan, Do, Check, Act — Deming's iterative improvement loop that builds continuous learning.</p>
+        <span class="tool-tag">Lean</span>
+      </div>
+    </div>
+
+    <!-- Tool Detail Area -->
+    <div id="toolDetail" style="margin-top:3rem; display:none;">
+      <div class="tool-tabs">
+        <button class="tool-tab active" onclick="showToolTab('fishbone')">Fishbone Diagram</button>
+        <button class="tool-tab" onclick="showToolTab('pareto')">Pareto Analysis</button>
+        <button class="tool-tab" onclick="showToolTab('sipoc')">SIPOC</button>
+      </div>
+
+      <!-- Fishbone -->
+      <div class="tool-tab-content active" id="tab-fishbone">
+        <div class="fishbone-wrapper">
+          <svg class="fishbone-svg" viewBox="0 0 700 300">
+            <!-- Spine -->
+            <line x1="60" y1="150" x2="620" y2="150" class="fish-bone-line" stroke-width="3"/>
+            <!-- Head -->
+            <rect x="600" y="120" width="90" height="60" rx="4" class="fish-head"/>
+            <text x="645" y="148" text-anchor="middle" class="fish-effect-label">Problem</text>
+            <text x="645" y="163" text-anchor="middle" class="fish-effect-label">/ Effect</text>
+            <!-- Tail fin -->
+            <polygon points="60,150 80,130 80,170" fill="rgba(13,27,42,0.3)"/>
+
+            <!-- Top bones -->
+            <line x1="160" y1="150" x2="120" y2="90" class="fish-cause-line"/>
+            <text x="100" y="82" text-anchor="middle" class="fish-cat-label">People</text>
+            <line x1="130" y1="120" x2="115" y2="105" class="fish-cause-line" stroke="rgba(13,27,42,0.2)"/>
+            <text x="98" y="103" text-anchor="end" class="fish-label">Training</text>
+            <line x1="145" y1="133" x2="130" y2="118" class="fish-cause-line" stroke="rgba(13,27,42,0.2)"/>
+            <text x="112" y="116" text-anchor="end" class="fish-label">Skills gap</text>
+
+            <line x1="300" y1="150" x2="260" y2="90" class="fish-cause-line"/>
+            <text x="240" y="82" text-anchor="middle" class="fish-cat-label">Process</text>
+            <line x1="270" y1="120" x2="255" y2="105" class="fish-cause-line" stroke="rgba(13,27,42,0.2)"/>
+            <text x="238" y="103" text-anchor="end" class="fish-label">No SOP</text>
+            <line x1="285" y1="133" x2="270" y2="118" class="fish-cause-line" stroke="rgba(13,27,42,0.2)"/>
+            <text x="252" y="116" text-anchor="end" class="fish-label">Rework loops</text>
+
+            <line x1="460" y1="150" x2="420" y2="90" class="fish-cause-line"/>
+            <text x="400" y="82" text-anchor="middle" class="fish-cat-label">Technology</text>
+            <line x1="430" y1="120" x2="415" y2="105" class="fish-cause-line" stroke="rgba(13,27,42,0.2)"/>
+            <text x="398" y="103" text-anchor="end" class="fish-label">Old systems</text>
+            <line x1="445" y1="133" x2="430" y2="118" class="fish-cause-line" stroke="rgba(13,27,42,0.2)"/>
+            <text x="412" y="116" text-anchor="end" class="fish-label">Integration fail</text>
+
+            <!-- Bottom bones -->
+            <line x1="220" y1="150" x2="180" y2="215" class="fish-cause-line"/>
+            <text x="160" y="230" text-anchor="middle" class="fish-cat-label">Environment</text>
+            <line x1="190" y1="180" x2="175" y2="195" class="fish-cause-line" stroke="rgba(13,27,42,0.2)"/>
+            <text x="158" y="195" text-anchor="end" class="fish-label">Pressure</text>
+
+            <line x1="380" y1="150" x2="340" y2="215" class="fish-cause-line"/>
+            <text x="320" y="230" text-anchor="middle" class="fish-cat-label">Materials</text>
+            <line x1="350" y1="180" x2="335" y2="195" class="fish-cause-line" stroke="rgba(13,27,42,0.2)"/>
+            <text x="318" y="195" text-anchor="end" class="fish-label">Data quality</text>
+
+            <line x1="540" y1="150" x2="500" y2="215" class="fish-cause-line"/>
+            <text x="480" y="230" text-anchor="middle" class="fish-cat-label">Measurement</text>
+            <line x1="510" y1="180" x2="495" y2="195" class="fish-cause-line" stroke="rgba(13,27,42,0.2)"/>
+            <text x="478" y="195" text-anchor="end" class="fish-label">No metrics</text>
+          </svg>
+          <p style="font-size:0.8rem;color:var(--text-muted);margin-top:0.5rem;">Example: Fishbone for IT incident root cause. Click tool cards above to explore more diagrams.</p>
+        </div>
+      </div>
+
+      <!-- Pareto -->
+      <div class="tool-tab-content" id="tab-pareto">
+        <div class="pareto-wrapper">
+          <h4 style="font-family:'Playfair Display',serif;margin-bottom:1rem;">IT Incident Frequency by Cause (Last 90 Days)</h4>
+          <div class="pareto-bar-row">
+            <span class="pareto-label">Config Errors</span>
+            <div class="pareto-bar-wrap"><div class="pareto-bar highlighted" style="width:82%"></div></div>
+            <span class="pareto-pct">41%</span>
+            <span class="pareto-cum">41%</span>
+          </div>
+          <div class="pareto-bar-row">
+            <span class="pareto-label">Access Rights</span>
+            <div class="pareto-bar-wrap"><div class="pareto-bar highlighted" style="width:62%"></div></div>
+            <span class="pareto-pct">31%</span>
+            <span class="pareto-cum">72%</span>
+          </div>
+          <div class="pareto-bar-row">
+            <span class="pareto-label">Network Timeout</span>
+            <div class="pareto-bar-wrap"><div class="pareto-bar" style="width:26%"></div></div>
+            <span class="pareto-pct">13%</span>
+            <span class="pareto-cum">85%</span>
+          </div>
+          <div class="pareto-bar-row">
+            <span class="pareto-label">Disk Space</span>
+            <div class="pareto-bar-wrap"><div class="pareto-bar" style="width:18%"></div></div>
+            <span class="pareto-pct">9%</span>
+            <span class="pareto-cum">94%</span>
+          </div>
+          <div class="pareto-bar-row">
+            <span class="pareto-label">Other</span>
+            <div class="pareto-bar-wrap"><div class="pareto-bar" style="width:12%"></div></div>
+            <span class="pareto-pct">6%</span>
+            <span class="pareto-cum">100%</span>
+          </div>
+          <p style="font-size:0.8rem;color:var(--text-muted);margin-top:1rem;">
+            <strong style="color:var(--orange);">80/20 Insight:</strong> Fixing Config Errors + Access Rights eliminates <strong>72%</strong> of all incidents.
+          </p>
+        </div>
+      </div>
+
+      <!-- SIPOC -->
+      <div class="tool-tab-content" id="tab-sipoc">
+        <div style="overflow-x:auto;">
+          <table class="sipoc-table">
+            <thead>
+              <tr>
+                <th>Suppliers</th>
+                <th>Inputs</th>
+                <th>Process</th>
+                <th>Outputs</th>
+                <th>Customers</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>IT Team</td>
+                <td>Incident Report</td>
+                <td>1. Receive & log ticket</td>
+                <td>Resolution Summary</td>
+                <td>End Users</td>
+              </tr>
+              <tr>
+                <td>Monitoring Tools</td>
+                <td>Alert Notifications</td>
+                <td>2. Triage & prioritize</td>
+                <td>Updated CMDB</td>
+                <td>Management</td>
+              </tr>
+              <tr>
+                <td>Vendors</td>
+                <td>SLA Requirements</td>
+                <td>3. Diagnose root cause</td>
+                <td>RCA Report</td>
+                <td>Audit Team</td>
+              </tr>
+              <tr>
+                <td>Dev Teams</td>
+                <td>Change Requests</td>
+                <td>4. Implement fix</td>
+                <td>Knowledge Article</td>
+                <td>Service Desk</td>
+              </tr>
+              <tr>
+                <td>End Users</td>
+                <td>Feedback / UAT</td>
+                <td>5. Verify & close</td>
+                <td>Closed Ticket</td>
+                <td>Business Units</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="font-size:0.8rem;color:var(--text-muted);margin-top:0.8rem;">Example SIPOC for IT Incident Management process. Customize for your own process flow.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== PROBLEM SOLVER ===================== -->
+<section id="solver">
+  <div class="container">
+    <div class="solver-wrapper">
+      <div class="solver-intro">
+        <div class="section-label">Interactive Tool</div>
+        <h2 class="section-title">Your AI-Guided Problem Solver</h2>
+        <p>Walk through a structured problem-solving session step by step. Enter any challenge and get guided from symptom to root cause to action plan.</p>
+        <div class="solver-features">
+          <div class="solver-feature"><div class="solver-feature-dot"></div><span>Structured problem definition</span></div>
+          <div class="solver-feature"><div class="solver-feature-dot"></div><span>Guided root cause exploration</span></div>
+          <div class="solver-feature"><div class="solver-feature-dot"></div><span>5 Why analysis framework</span></div>
+          <div class="solver-feature"><div class="solver-feature-dot"></div><span>Actionable improvement ideas</span></div>
+        </div>
+      </div>
+      <div class="solver-ui">
+        <div class="solver-header">
+          <div class="solver-dot solver-dot-r"></div>
+          <div class="solver-dot solver-dot-y"></div>
+          <div class="solver-dot solver-dot-g"></div>
+          <span class="solver-header-title">Problem Solver v1.0</span>
+        </div>
+        <div class="solver-body">
+          <div class="step-indicator">
+            <div class="step-pip active" id="pip1"></div>
+            <div class="step-pip" id="pip2"></div>
+            <div class="step-pip" id="pip3"></div>
+            <div class="step-pip" id="pip4"></div>
+          </div>
+
+          <!-- Step 1: Define Problem -->
+          <div class="solver-step active" id="step1">
+            <div class="solver-step-label">Step 01 — Define</div>
+            <h4>What is the problem you're facing?</h4>
+            <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1rem;">Be specific. Describe the impact, frequency, and who is affected.</p>
+            <textarea class="solver-input" id="problemInput" rows="4" placeholder="e.g. Our IT helpdesk tickets are taking 3x longer to resolve than our SLA target, causing customer complaints every Monday morning..."></textarea>
+            <button class="solver-btn" onclick="nextStep(1)">Analyze Problem →</button>
+          </div>
+
+          <!-- Step 2: Root Causes -->
+          <div class="solver-step" id="step2">
+            <div class="solver-step-label">Step 02 — Explore Causes</div>
+            <h4>Possible root cause categories</h4>
+            <div class="solver-result" id="rootCauseOutput">
+              <strong>Problem:</strong> <span id="problemSummary"></span><br><br>
+              Based on your problem, consider investigating these areas:<br><br>
+              🔹 <strong>People:</strong> Skills gaps, communication breakdowns, unclear ownership<br>
+              🔹 <strong>Process:</strong> Missing SOPs, approval bottlenecks, redundant steps<br>
+              🔹 <strong>Technology:</strong> System limitations, lack of automation, integration issues<br>
+              🔹 <strong>Data:</strong> Incomplete information, no tracking, delayed reporting
+            </div>
+            <div class="solver-nav">
+              <button class="solver-btn solver-back" onclick="prevStep(2)">← Back</button>
+              <button class="solver-btn" onclick="nextStep(2)">Start 5 Why Analysis →</button>
+            </div>
+          </div>
+
+          <!-- Step 3: 5 Why -->
+          <div class="solver-step" id="step3">
+            <div class="solver-step-label">Step 03 — 5 Why Analysis</div>
+            <h4>Drill down to the root cause</h4>
+            <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1rem;">Ask "why" five times to peel away the layers.</p>
+            <div class="why-row"><div class="why-num">1</div><div class="why-text" contenteditable="true" data-placeholder="Why does this problem occur?">Why does this problem occur?</div></div>
+            <div class="why-row"><div class="why-num">2</div><div class="why-text" contenteditable="true" data-placeholder="Why? (answer to Why #1)">Why? (answer to Why #1)</div></div>
+            <div class="why-row"><div class="why-num">3</div><div class="why-num" style="width:auto;display:none"></div><div class="why-text" contenteditable="true" data-placeholder="Why? (go deeper...)">Why? (go deeper...)</div></div>
+            <div class="why-row"><div class="why-num">4</div><div class="why-text" contenteditable="true" data-placeholder="Why? (getting to root cause...)">Why? (getting to root cause...)</div></div>
+            <div class="why-row"><div class="why-num">5</div><div class="why-text" contenteditable="true" data-placeholder="Why? (this is likely your root cause)">Why? (this is likely your root cause)</div></div>
+            <div class="solver-nav">
+              <button class="solver-btn solver-back" onclick="prevStep(3)">← Back</button>
+              <button class="solver-btn" onclick="nextStep(3)">Generate Improvements →</button>
+            </div>
+          </div>
+
+          <!-- Step 4: Improvements -->
+          <div class="solver-step" id="step4">
+            <div class="solver-step-label">Step 04 — Improve</div>
+            <h4>Suggested improvement actions</h4>
+            <div class="improvement-list">
+              <div class="improvement-item">
+                <span>🎯</span>
+                <span><strong>Short-term:</strong> Document the current process and identify the specific step causing the delay. Create a quick-fix workaround within 48 hours.</span>
+              </div>
+              <div class="improvement-item">
+                <span>🔧</span>
+                <span><strong>Medium-term:</strong> Design an SOP for the affected process. Train the team and assign clear ownership. Implement a tracking mechanism.</span>
+              </div>
+              <div class="improvement-item">
+                <span>📈</span>
+                <span><strong>Long-term:</strong> Automate repetitive steps, implement feedback loops, and establish a monthly review to monitor KPIs and prevent recurrence.</span>
+              </div>
+              <div class="improvement-item">
+                <span>🔒</span>
+                <span><strong>Control:</strong> Set up a control chart to monitor the process. Define upper/lower control limits and escalation triggers.</span>
+              </div>
+            </div>
+            <div class="solver-nav">
+              <button class="solver-btn solver-back" onclick="prevStep(4)">← Back</button>
+              <button class="solver-btn" onclick="resetSolver()">✓ Start New Analysis</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CASE STUDIES ===================== -->
+<section id="cases">
+  <div class="container">
+    <div class="section-label">Real-World Learning</div>
+    <h2 class="section-title">Case Studies that teach, not just tell</h2>
+    <p class="section-subtitle">Every case study walks you through a real business or IT problem — from messy reality to structured solution.</p>
+
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" class="search-input" placeholder="Search case studies..." oninput="filterCases(this.value)" id="caseSearch">
+    </div>
+
+    <div class="cases-filter">
+      <button class="filter-btn active" onclick="setFilter('all', this)">All Cases</button>
+      <button class="filter-btn" onclick="setFilter('IT', this)">IT & Systems</button>
+      <button class="filter-btn" onclick="setFilter('Operations', this)">Operations</button>
+      <button class="filter-btn" onclick="setFilter('Service', this)">Service Delivery</button>
+      <button class="filter-btn" onclick="setFilter('Quality', this)">Quality</button>
+    </div>
+
+    <div class="cases-grid" id="casesGrid">
+      <!-- Case 1 -->
+      <div class="case-card" data-category="IT">
+        <div class="case-card-top">
+          <div class="case-category">IT · Incident Management</div>
+          <h3>Why did our server response time spike every Monday at 9 AM?</h3>
+          <span class="case-impact">−65% Incidents</span>
+        </div>
+        <div class="case-body">
+          <div class="case-meta">
+            <div class="case-row">
+              <span class="case-label">Problem</span>
+              <span class="case-value">Weekly 3-hour performance degradation affecting 400+ users, costing £12K in lost productivity.</span>
+            </div>
+            <div class="case-row">
+              <span class="case-label">Root Cause</span>
+              <span class="case-value">Scheduled backup jobs + batch report generation colliding with business peak hours.</span>
+            </div>
+            <div class="case-row">
+              <span class="case-label">Solution</span>
+              <span class="case-value">Rescheduled jobs to 2 AM, implemented resource throttling, and added monitoring alerts.</span>
+            </div>
+          </div>
+        </div>
+        <div class="case-footer">
+          <div class="case-tools">
+            <span class="case-tool-tag">5 Why</span>
+            <span class="case-tool-tag">Fishbone</span>
+            <span class="case-tool-tag">Pareto</span>
+          </div>
+          <a href="#" class="case-link">Read →</a>
+        </div>
+      </div>
+      <!-- Case 2 -->
+      <div class="case-card" data-category="Service">
+        <div class="case-card-top">
+          <div class="case-category">Service · Helpdesk</div>
+          <h3>Ticket resolution time exceeded SLA 40% of the time — what was really happening?</h3>
+          <span class="case-impact">SLA: 95%→99%</span>
+        </div>
+        <div class="case-body">
+          <div class="case-meta">
+            <div class="case-row">
+              <span class="case-label">Problem</span>
+              <span class="case-value">1 in 3 helpdesk tickets missed the 4-hour SLA, triggering escalations and customer dissatisfaction.</span>
+            </div>
+            <div class="case-row">
+              <span class="case-label">Root Cause</span>
+              <span class="case-value">Tickets were being routed to the wrong team 38% of the time due to vague categorisation rules.</span>
+            </div>
+            <div class="case-row">
+              <span class="case-label">Solution</span>
+              <span class="case-value">Redesigned ticket taxonomy, automated routing rules, trained agents, and added triage checkpoints.</span>
+            </div>
+          </div>
+        </div>
+        <div class="case-footer">
+          <div class="case-tools">
+            <span class="case-tool-tag">SIPOC</span>
+            <span class="case-tool-tag">5 Why</span>
+            <span class="case-tool-tag">DMAIC</span>
+          </div>
+          <a href="#" class="case-link">Read →</a>
+        </div>
+      </div>
+      <!-- Case 3 -->
+      <div class="case-card" data-category="Operations">
+        <div class="case-card-top">
+          <div class="case-category">Operations · Lean</div>
+          <h3>A procurement process that took 22 days — reduced to 6 days with Lean principles</h3>
+          <span class="case-impact">−73% Lead Time</span>
+        </div>
+        <div class="case-body">
+          <div class="case-meta">
+            <div class="case-row">
+              <span class="case-label">Problem</span>
+              <span class="case-value">Purchase orders took 22 days on average — 8× the industry benchmark — causing project delays.</span>
+            </div>
+            <div class="case-row">
+              <span class="case-label">Root Cause</span>
+              <span class="case-value">7 approval stages, most adding zero value. 60% of delays occurred at a single manager's inbox.</span>
+            </div>
+            <div class="case-row">
+              <span class="case-label">Solution</span>
+              <span class="case-value">Value stream mapping revealed 5 non-value steps. Removed 4 approval tiers, digitised forms.</span>
+            </div>
+          </div>
+        </div>
+        <div class="case-footer">
+          <div class="case-tools">
+            <span class="case-tool-tag">VSM</span>
+            <span class="case-tool-tag">Lean</span>
+            <span class="case-tool-tag">PDCA</span>
+          </div>
+          <a href="#" class="case-link">Read →</a>
+        </div>
+      </div>
+      <!-- Case 4 -->
+      <div class="case-card" data-category="Quality">
+        <div class="case-card-top">
+          <div class="case-category">Quality · Manufacturing</div>
+          <h3>Defect rate of 8% on a production line — traced to a single machine calibration drift</h3>
+          <span class="case-impact">Defects: 8%→0.4%</span>
+        </div>
+        <div class="case-body">
+          <div class="case-meta">
+            <div class="case-row">
+              <span class="case-label">Problem</span>
+              <span class="case-value">1 in 12 units failing quality check. £200K monthly rework cost. Customer returns increasing.</span>
+            </div>
+            <div class="case-row">
+              <span class="case-label">Root Cause</span>
+              <span class="case-value">Temperature sensor on Machine 3 drifting 2.3°C after 4 hours of operation — never caught by checklist.</span>
+            </div>
+            <div class="case-row">
+              <span class="case-label">Solution</span>
+              <span class="case-value">Added real-time sensor monitoring, automated calibration triggers, and updated PM schedule.</span>
+            </div>
+          </div>
+        </div>
+        <div class="case-footer">
+          <div class="case-tools">
+            <span class="case-tool-tag">Fishbone</span>
+            <span class="case-tool-tag">Control Chart</span>
+            <span class="case-tool-tag">SPC</span>
+          </div>
+          <a href="#" class="case-link">Read →</a>
+        </div>
+      </div>
+      <!-- Case 5 -->
+      <div class="case-card" data-category="IT">
+        <div class="case-card-top">
+          <div class="case-category">IT · Data Quality</div>
+          <h3>30% of monthly reports contained errors — the data pipeline no one owned</h3>
+          <span class="case-impact">Accuracy: 99.2%</span>
+        </div>
+        <div class="case-body">
+          <div class="case-meta">
+            <div class="case-row">
+              <span class="case-label">Problem</span>
+              <span class="case-value">Board-level reports had material errors monthly. Decisions were being made on bad data.</span>
+            </div>
+            <div class="case-row">
+              <span class="case-label">Root Cause</span>
+              <span class="case-value">Three teams each assumed another team was validating the data. Classic diffusion of responsibility.</span>
+            </div>
+            <div class="case-row">
+              <span class="case-label">Solution</span>
+              <span class="case-value">Data ownership RACI matrix, automated validation checks, and a data quality dashboard.</span>
+            </div>
+          </div>
+        </div>
+        <div class="case-footer">
+          <div class="case-tools">
+            <span class="case-tool-tag">RACI</span>
+            <span class="case-tool-tag">5 Why</span>
+            <span class="case-tool-tag">SIPOC</span>
+          </div>
+          <a href="#" class="case-link">Read →</a>
+        </div>
+      </div>
+      <!-- Case 6 -->
+      <div class="case-card" data-category="Operations">
+        <div class="case-card-top">
+          <div class="case-category">Operations · HR</div>
+          <h3>Why employee onboarding took 3 weeks when the benchmark is 3 days</h3>
+          <span class="case-impact">Time: −80%</span>
+        </div>
+        <div class="case-body">
+          <div class="case-meta">
+            <div class="case-row">
+              <span class="case-label">Problem</span>
+              <span class="case-value">New joiners waited 3 weeks for system access, causing disengagement and lost productivity.</span>
+            </div>
+            <div class="case-row">
+              <span class="case-label">Root Cause</span>
+              <span class="case-value">IT provisioning was triggered only AFTER HR closed the hire — a 5-day lag before work even started.</span>
+            </div>
+            <div class="case-row">
+              <span class="case-label">Solution</span>
+              <span class="case-value">Parallel processing — IT provisioning starts at offer acceptance. Automated Jira workflow introduced.</span>
+            </div>
+          </div>
+        </div>
+        <div class="case-footer">
+          <div class="case-tools">
+            <span class="case-tool-tag">VSM</span>
+            <span class="case-tool-tag">SIPOC</span>
+            <span class="case-tool-tag">Lean</span>
+          </div>
+          <a href="#" class="case-link">Read →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== BLOG ===================== -->
+<section id="blog">
+  <div class="container">
+    <div class="section-label">Learning Hub</div>
+    <h2 class="section-title">Insights for analytical minds</h2>
+    <p class="section-subtitle">Practical articles on quality thinking, root cause analysis, and structured problem-solving — written by practitioners, not theorists.</p>
+    <div class="blog-grid">
+      <!-- Featured -->
+      <div class="blog-card blog-card-featured reveal">
+        <div class="blog-cat">Root Cause Analysis</div>
+        <h3>The 5 Why Method is Powerful — But Most People Use It Wrong</h3>
+        <p>After facilitating hundreds of RCA sessions, I've noticed the same mistake repeated: teams stop at "human error" as if it's an answer. It never is. Human error is always a symptom, never a root cause. Here's how to go deeper and find what actually needs to change.</p>
+        <div class="blog-meta">
+          <span class="blog-date">Feb 2025</span>
+          <a href="#" class="blog-read">Read Article →</a>
+        </div>
+      </div>
+      <!-- Blog 2 -->
+      <div class="blog-card reveal reveal-delay-1">
+        <div class="blog-cat">Lean Thinking</div>
+        <h3>The 8 Wastes of Lean — and Why IT Teams Ignore Half of Them</h3>
+        <p>TIMWOODS explained for knowledge workers and software teams, with real examples from project management.</p>
+        <div class="blog-meta">
+          <span class="blog-date">Jan 2025</span>
+          <a href="#" class="blog-read">Read →</a>
+        </div>
+      </div>
+      <!-- Blog 3 -->
+      <div class="blog-card reveal reveal-delay-2">
+        <div class="blog-cat">Decision Making</div>
+        <h3>How to Structure a Decision When You're Under Pressure and Short on Data</h3>
+        <p>A practical framework using MECE thinking and decision trees when certainty is a luxury.</p>
+        <div class="blog-meta">
+          <span class="blog-date">Jan 2025</span>
+          <a href="#" class="blog-read">Read →</a>
+        </div>
+      </div>
+      <!-- Blog 4 -->
+      <div class="blog-card reveal">
+        <div class="blog-cat">Six Sigma</div>
+        <h3>What DMAIC Actually Means Outside the Textbook</h3>
+        <p>Breaking down Define–Measure–Analyze–Improve–Control with a real IT project walkthrough.</p>
+        <div class="blog-meta">
+          <span class="blog-date">Dec 2024</span>
+          <a href="#" class="blog-read">Read →</a>
+        </div>
+      </div>
+      <!-- Blog 5 -->
+      <div class="blog-card reveal reveal-delay-1">
+        <div class="blog-cat">Quality Improvement</div>
+        <h3>Why Most Process Improvements Fail Within 6 Months (And How to Make Yours Stick)</h3>
+        <p>Sustaining gains is harder than making them. Control plans, ownership, and the psychology of change.</p>
+        <div class="blog-meta">
+          <span class="blog-date">Nov 2024</span>
+          <a href="#" class="blog-read">Read →</a>
+        </div>
+      </div>
+    </div>
+    <div class="blog-cta">
+      <a href="#subscribe" class="btn-primary">Subscribe for Weekly Articles →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SUBSCRIBE ===================== -->
+<section id="subscribe">
+  <div class="subscribe-inner">
+    <div class="section-label">Stay Curious</div>
+    <h2>Get structured thinking delivered weekly</h2>
+    <p>Join 15,000+ IT professionals, managers, and analysts who receive our weekly insights on problem-solving, quality thinking, and continuous improvement.</p>
+    <div class="subscribe-form">
+      <input type="email" placeholder="your@email.com" id="emailInput">
+      <button onclick="handleSubscribe()">Subscribe →</button>
+    </div>
+    <p class="subscribe-note">No spam. Unsubscribe anytime. Typically 1 email per week.</p>
+  </div>
+</section>
+
+<!-- ===================== ABOUT ===================== -->
+<section id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div>
+        <div class="about-avatar">👷</div>
+        <h2 class="section-title">Driven by curiosity.<br>Grounded in data.</h2>
+        <div class="about-credentials">
+          <div class="credential"><span class="credential-icon">🎓</span><span>Six Sigma Black Belt (ASQ Certified)</span></div>
+          <div class="credential"><span class="credential-icon">📋</span><span>Lean Practitioner — 12+ Years</span></div>
+          <div class="credential"><span class="credential-icon">💼</span><span>Quality Manager, Global IT Operations</span></div>
+          <div class="credential"><span class="credential-icon">✍️</span><span>Author & Educator — 15K+ Community</span></div>
+        </div>
+      </div>
+      <div>
+        <div class="section-label">About</div>
+        <div class="about-quote">"The right question is worth more than a hundred answers. Curiosity isn't a soft skill — it's the sharpest tool in the room."</div>
+        <p class="about-text">I'm a Quality Manager and Six Sigma Black Belt who has spent over a decade helping organisations move from firefighting mode to structured, proactive problem-solving. I've worked across IT service management, manufacturing, and enterprise operations — and the pattern is always the same: most problems are solvable, they're just not being looked at correctly.</p>
+        <p class="about-text">CuriousToSolve was built because the best frameworks in the world — Six Sigma, Lean, RCA — are locked behind expensive certifications and dry textbooks. I wanted to make structured thinking accessible, practical, and frankly — more interesting.</p>
+        <p>This platform is for anyone who wants to stop reacting and start solving. Whether you're an IT analyst troubleshooting a recurring incident, a manager trying to improve a broken process, or a student learning quality tools for the first time — you're in the right place.</p>
+        <div style="margin-top:2rem;">
+          <a href="#subscribe" class="btn-primary">Join the Community →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FOOTER ===================== -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <h3>Curious<span>To</span>Solve</h3>
+        <p>A structured thinking platform for problem solvers. Built on Six Sigma, Lean, and genuine curiosity about how things break — and how to fix them properly.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Tools</h4>
+        <ul>
+          <li><a href="#solver">Problem Solver</a></li>
+          <li><a href="#tools">5 Why Analysis</a></li>
+          <li><a href="#tools">Fishbone Diagram</a></li>
+          <li><a href="#tools">Pareto Chart</a></li>
+          <li><a href="#tools">SIPOC</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Content</h4>
+        <ul>
+          <li><a href="#cases">Case Studies</a></li>
+          <li><a href="#blog">Blog</a></li>
+          <li><a href="#blog">Root Cause Analysis</a></li>
+          <li><a href="#blog">Lean Thinking</a></li>
+          <li><a href="#blog">Six Sigma</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Platform</h4>
+        <ul>
+          <li><a href="#about">About</a></li>
+          <li><a href="#subscribe">Newsletter</a></li>
+          <li><a href="#">Learning Hub</a></li>
+          <li><a href="#">Contact</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 CuriousToSolve.com — All rights reserved.</p>
+      <div class="footer-badge">curioustosolve.com · live</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ===================== CURSOR =====================
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursor-ring');
+let mx = 0, my = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; cursor.style.left = mx+'px'; cursor.style.top = my+'px'; });
+function animateRing() {
+  rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+  ring.style.left = rx+'px'; ring.style.top = ry+'px';
+  requestAnimationFrame(animateRing);
+}
+animateRing();
+
+// ===================== NAVBAR SCROLL =====================
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 60);
+});
+
+// ===================== MOBILE MENU =====================
+function toggleMenu() {
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+
+// ===================== SCROLL REVEAL =====================
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.12 });
+reveals.forEach(el => observer.observe(el));
+
+// ===================== COUNTER ANIMATION =====================
+const counters = document.querySelectorAll('.counter');
+const counterObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting && !e.target.dataset.done) {
+      e.target.dataset.done = true;
+      const target = parseInt(e.target.dataset.target);
+      let count = 0;
+      const step = Math.ceil(target / 40);
+      const interval = setInterval(() => {
+        count = Math.min(count + step, target);
+        e.target.textContent = count;
+        if (count >= target) clearInterval(interval);
+      }, 40);
+    }
+  });
+}, { threshold: 0.5 });
+counters.forEach(c => counterObserver.observe(c));
+
+// ===================== SOLVER =====================
+let currentStep = 1;
+function nextStep(from) {
+  if (from === 1) {
+    const val = document.getElementById('problemInput').value.trim();
+    if (!val) { document.getElementById('problemInput').style.borderColor='#E85D04'; return; }
+    document.getElementById('problemSummary').textContent = val.length > 80 ? val.slice(0,80)+'...' : val;
+  }
+  document.getElementById('step'+from).classList.remove('active');
+  document.getElementById('step'+(from+1)).classList.add('active');
+  currentStep = from + 1;
+  updatePips();
+}
+function prevStep(from) {
+  document.getElementById('step'+from).classList.remove('active');
+  document.getElementById('step'+(from-1)).classList.add('active');
+  currentStep = from - 1;
+  updatePips();
+}
+function updatePips() {
+  for (let i = 1; i <= 4; i++) {
+    const pip = document.getElementById('pip'+i);
+    pip.className = 'step-pip';
+    if (i < currentStep) pip.classList.add('done');
+    else if (i === currentStep) pip.classList.add('active');
+  }
+}
+function resetSolver() {
+  document.getElementById('problemInput').value = '';
+  document.getElementById('problemInput').style.borderColor = '';
+  for (let i = 1; i <= 4; i++) {
+    document.getElementById('step'+i).classList.remove('active');
+  }
+  document.getElementById('step1').classList.add('active');
+  currentStep = 1;
+  updatePips();
+}
+function scrollToSolver() {
+  document.getElementById('solver').scrollIntoView({ behavior: 'smooth' });
+}
+
+// ===================== TOOLS TABS =====================
+function showToolTab(tab) {
+  const detail = document.getElementById('toolDetail');
+  detail.style.display = 'block';
+  document.querySelectorAll('.tool-tab-content').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.tool-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  const tabIndex = ['fishbone','pareto','sipoc'].indexOf(tab);
+  document.querySelectorAll('.tool-tab')[tabIndex].classList.add('active');
+  detail.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ===================== CASE STUDY FILTER =====================
+let activeFilter = 'all';
+function setFilter(cat, btn) {
+  activeFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  applyFilter();
+}
+function filterCases(query) { applyFilter(query); }
+function applyFilter(query='') {
+  const q = (query || document.getElementById('caseSearch').value).toLowerCase();
+  document.querySelectorAll('.case-card').forEach(card => {
+    const matchCat = activeFilter === 'all' || card.dataset.category === activeFilter;
+    const matchQ = !q || card.textContent.toLowerCase().includes(q);
+    card.style.display = (matchCat && matchQ) ? '' : 'none';
+  });
+}
+
+// ===================== SUBSCRIBE =====================
+function handleSubscribe() {
+  const input = document.getElementById('emailInput');
+  const val = input.value.trim();
+  if (!val || !val.includes('@')) { input.style.borderColor='rgba(255,255,255,0.8)'; return; }
+  input.value = '✓ You\'re on the list!';
+  input.style.background = 'rgba(255,255,255,0.25)';
+  input.style.color = '#fff';
+  input.disabled = true;
+}
+</script>
+</body>
+</html>
