@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Six Sigma Toolkit | CuriousToSolve</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+/* ══════════════════════════════════════════════
+   DESIGN TOKENS — matched to CuriousToSolve
+═══════════════════════════════════════════════ */
+:root{
+  --bg:#0a0f1a;
+  --bg2:#0e1520;
+  --bg3:#121c2e;
+  --surface:#151f32;
+  --surface2:#1a2640;
+  --border:#1e2e47;
+  --border2:#253858;
+  --accent:#4f8ef7;
+  --accent2:#6ba3ff;
+  --green:#2dd4a0;
+  --orange:#f4722b;
+  --orange2:#ff8c4b;
+  --purple:#a855f7;
+  --red:#ef4444;
+  --yellow:#f59e0b;
+  --text:#e8edf5;
+  --text2:#94a3b8;
+  --text3:#5a7094;
+  --white:#fff;
+  /* phase colours */
+  --define:#3a7bd5;
+  --measure:#2dd4a0;
+  --analyze:#a855f7;
+  --improve:#f4722b;
+  --control:#ef4444;
+  --radius:14px;
+  --shadow:0 4px 24px rgba(0,0,0,.45);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+/* ── NAV (matches main site) ── */
+.site-nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 2.5rem;height:68px;
+  background:rgba(10,15,26,.92);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);
+}
+.nav-brand{
+  font-size:1.15rem;font-weight:800;color:var(--white);
+  text-decoration:none;display:flex;align-items:center;gap:8px;letter-spacing:-.02em;
+}
+.nav-brand em{font-style:italic;color:var(--accent)}
+.nav-links{display:flex;align-items:center;gap:0}
+.nav-links a{
+  color:var(--text2);font-size:.85rem;font-weight:500;
+  text-decoration:none;padding:8px 14px;border-radius:8px;
+  transition:color .2s,background .2s;white-space:nowrap;
+}
+.nav-links a:hover{color:var(--white);background:rgba(255,255,255,.06)}
+.nav-links a.active{color:var(--white);background:rgba(79,142,247,.15);border:1px solid rgba(79,142,247,.25)}
+.nav-cta{
+  background:var(--accent);color:var(--white)!important;
+  padding:8px 20px!important;border-radius:8px!important;font-weight:600!important;
+  border:none!important;background:linear-gradient(135deg,var(--accent),var(--purple))!important;
+}
+.nav-cta:hover{opacity:.9;background:linear-gradient(135deg,var(--accent),var(--purple))!important}
+.nav-hamburger{display:none;background:none;border:none;color:var(--text);cursor:pointer;font-size:1.2rem;padding:8px}
+
+/* ── HERO ── */
+.hero{
+  padding:130px 2rem 70px;text-align:center;position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 50% at 50% 30%,rgba(79,142,247,.08) 0%,transparent 65%),
+             radial-gradient(ellipse 40% 30% at 80% 70%,rgba(168,85,247,.05) 0%,transparent 60%);
+  pointer-events:none;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(79,142,247,.1);border:1px solid rgba(79,142,247,.25);
+  color:var(--accent2);font-size:.72rem;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;padding:6px 16px;border-radius:30px;margin-bottom:1.5rem;
+}
+.hero h1{
+  font-size:clamp(2.2rem,5.5vw,3.8rem);font-weight:800;
+  line-height:1.1;max-width:800px;margin:0 auto 1.25rem;letter-spacing:-.03em;
+}
+.hero h1 em{
+  font-style:italic;font-family:'Playfair Display',serif;
+  background:linear-gradient(135deg,var(--accent),var(--purple) 60%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.hero p{color:var(--text2);font-size:1.05rem;max-width:580px;margin:0 auto 2.5rem;line-height:1.7}
+.hero-stats{
+  display:flex;justify-content:center;gap:3rem;flex-wrap:wrap;margin-top:2.5rem;
+}
+.stat{text-align:center}
+.stat-num{font-size:1.8rem;font-weight:800;color:var(--white);letter-spacing:-.03em}
+.stat-label{font-size:.75rem;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-top:2px}
+
+/* ── SEARCH ── */
+.search-row{
+  max-width:520px;margin:0 auto 1rem;position:relative;
+}
+.search-row i{position:absolute;left:18px;top:50%;transform:translateY(-50%);color:var(--text3)}
+#searchInput{
+  width:100%;background:var(--surface2);border:1px solid var(--border2);
+  color:var(--text);font-family:'Inter',sans-serif;font-size:.92rem;
+  padding:13px 18px 13px 46px;border-radius:50px;outline:none;
+  transition:border-color .2s,box-shadow .2s;
+}
+#searchInput::placeholder{color:var(--text3)}
+#searchInput:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(79,142,247,.15)}
+#searchMeta{text-align:center;font-size:.78rem;color:var(--text3);min-height:1.3em}
+
+/* ── PHASE TABS ── */
+.phase-tabs{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:8px;
+  padding:0 2rem 3.5rem;
+}
+.ptab{
+  display:flex;align-items:center;gap:7px;padding:9px 22px;border-radius:30px;
+  font-size:.78rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  cursor:pointer;border:1.5px solid transparent;text-decoration:none;
+  transition:all .2s;background:transparent;color:inherit;font-family:'Inter',sans-serif;
+}
+.ptab.all{border-color:var(--border2);color:var(--text2)}
+.ptab.all:hover,.ptab.all.active{background:var(--surface2);color:var(--white);border-color:var(--border2)}
+.ptab.define{border-color:var(--define);color:var(--define)}
+.ptab.define:hover,.ptab.define.active{background:rgba(58,123,213,.15)}
+.ptab.measure{border-color:var(--measure);color:var(--measure)}
+.ptab.measure:hover,.ptab.measure.active{background:rgba(45,212,160,.12)}
+.ptab.analyze{border-color:var(--analyze);color:var(--analyze)}
+.ptab.analyze:hover,.ptab.analyze.active{background:rgba(168,85,247,.12)}
+.ptab.improve{border-color:var(--improve);color:var(--improve)}
+.ptab.improve:hover,.ptab.improve.active{background:rgba(244,114,43,.12)}
+.ptab.control{border-color:var(--control);color:var(--control)}
+.ptab.control:hover,.ptab.control.active{background:rgba(239,68,68,.12)}
+
+/* ── MAIN ── */
+main{max-width:1340px;margin:0 auto;padding:0 1.5rem 100px}
+
+/* ── PHASE SECTION ── */
+.phase-section{margin-bottom:64px}
+.phase-header{
+  display:flex;align-items:center;gap:14px;
+  margin-bottom:24px;padding-bottom:18px;
+  border-bottom:1px solid var(--border);
+}
+.ph-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.define .ph-dot{background:var(--define)}
+.measure .ph-dot{background:var(--measure)}
+.analyze .ph-dot{background:var(--analyze)}
+.improve .ph-dot{background:var(--improve)}
+.control .ph-dot{background:var(--control)}
+.ph-title{font-size:1.35rem;font-weight:800;color:var(--white);letter-spacing:-.02em}
+.ph-count{
+  margin-left:auto;font-size:.68rem;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;padding:4px 12px;border-radius:20px;
+}
+.define .ph-count{background:rgba(58,123,213,.12);color:var(--define);border:1px solid rgba(58,123,213,.25)}
+.measure .ph-count{background:rgba(45,212,160,.1);color:var(--measure);border:1px solid rgba(45,212,160,.2)}
+.analyze .ph-count{background:rgba(168,85,247,.1);color:var(--analyze);border:1px solid rgba(168,85,247,.2)}
+.improve .ph-count{background:rgba(244,114,43,.1);color:var(--improve);border:1px solid rgba(244,114,43,.2)}
+.control .ph-count{background:rgba(239,68,68,.1);color:var(--control);border:1px solid rgba(239,68,68,.2)}
+
+/* ── TOOL GRID ── */
+.tool-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(268px,1fr));
+  gap:16px;
+}
+
+/* ── TOOL CARD ── */
+.tool-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:22px;
+  display:flex;flex-direction:column;gap:10px;
+  cursor:pointer;position:relative;overflow:hidden;
+  transition:transform .22s ease,border-color .22s,box-shadow .22s,background .22s;
+}
+.tool-card::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  opacity:0;transition:opacity .22s;
+}
+.define  .tool-card::after{background:var(--define)}
+.measure .tool-card::after{background:var(--measure)}
+.analyze .tool-card::after{background:var(--analyze)}
+.improve .tool-card::after{background:var(--improve)}
+.control .tool-card::after{background:var(--control)}
+.tool-card:hover{transform:translateY(-5px);background:var(--surface2);box-shadow:0 20px 48px rgba(0,0,0,.5)}
+.tool-card:hover::after{opacity:1}
+.define  .tool-card:hover{border-color:rgba(58,123,213,.4)}
+.measure .tool-card:hover{border-color:rgba(45,212,160,.35)}
+.analyze .tool-card:hover{border-color:rgba(168,85,247,.4)}
+.improve .tool-card:hover{border-color:rgba(244,114,43,.4)}
+.control .tool-card:hover{border-color:rgba(239,68,68,.4)}
+
+.card-icon{
+  width:44px;height:44px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;flex-shrink:0;
+}
+.define  .card-icon{background:rgba(58,123,213,.12);color:var(--define)}
+.measure .card-icon{background:rgba(45,212,160,.1);color:var(--measure)}
+.analyze .card-icon{background:rgba(168,85,247,.1);color:var(--analyze)}
+.improve .card-icon{background:rgba(244,114,43,.1);color:var(--improve)}
+.control .card-icon{background:rgba(239,68,68,.1);color:var(--control)}
+
+.card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.card-interactive-badge{
+  font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  background:rgba(79,142,247,.12);color:var(--accent2);border:1px solid rgba(79,142,247,.2);
+  padding:3px 8px;border-radius:20px;white-space:nowrap;
+}
+.card-title{font-size:.92rem;font-weight:700;color:var(--white);line-height:1.3}
+.card-desc{font-size:.79rem;color:var(--text2);line-height:1.6;flex:1}
+.card-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:9px 18px;border-radius:8px;
+  font-size:.78rem;font-weight:700;letter-spacing:.04em;
+  border:none;cursor:pointer;font-family:'Inter',sans-serif;
+  background:var(--accent);color:var(--white);
+  transition:opacity .2s,transform .15s;align-self:flex-start;margin-top:4px;
+}
+.card-btn:hover{opacity:.85;transform:translateX(2px)}
+.define  .card-btn{background:var(--define)}
+.measure .card-btn{background:var(--measure);color:var(--bg)}
+.analyze .card-btn{background:var(--analyze)}
+.improve .card-btn{background:var(--improve)}
+.control .card-btn{background:var(--control)}
+
+/* ── MODAL OVERLAY ── */
+.modal-overlay{
+  display:none;position:fixed;inset:0;z-index:1000;
+  background:rgba(5,10,20,.85);backdrop-filter:blur(6px);
+  align-items:flex-start;justify-content:center;padding:24px 16px;overflow-y:auto;
+}
+.modal-overlay.open{display:flex}
+.modal{
+  background:var(--bg3);border:1px solid var(--border2);
+  border-radius:18px;width:100%;max-width:900px;
+  box-shadow:0 32px 80px rgba(0,0,0,.7);
+  animation:modalIn .28s ease;position:relative;margin:auto;
+}
+@keyframes modalIn{from{opacity:0;transform:translateY(20px) scale(.97)}to{opacity:1;transform:none}}
+.modal-header{
+  display:flex;align-items:center;gap:14px;
+  padding:22px 26px;border-bottom:1px solid var(--border);
+}
+.modal-phase-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.modal-title{font-size:1.1rem;font-weight:800;color:var(--white);flex:1;letter-spacing:-.02em}
+.modal-close{
+  background:rgba(255,255,255,.06);border:1px solid var(--border);
+  color:var(--text2);width:34px;height:34px;border-radius:8px;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.9rem;
+  transition:background .2s,color .2s;
+}
+.modal-close:hover{background:rgba(255,255,255,.12);color:var(--white)}
+.modal-body{padding:26px}
+.modal-actions{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  padding:18px 26px;border-top:1px solid var(--border);
+}
+.btn{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:10px 20px;border-radius:8px;font-size:.82rem;
+  font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;
+  border:none;transition:opacity .2s,transform .15s;letter-spacing:.02em;
+}
+.btn:hover{opacity:.85}
+.btn-primary{background:var(--accent);color:var(--white)}
+.btn-secondary{background:var(--surface2);color:var(--text2);border:1px solid var(--border2)}
+.btn-green{background:var(--green);color:var(--bg)}
+.btn-orange{background:var(--orange);color:var(--white)}
+
+/* ── FORM ELEMENTS ── */
+.form-group{margin-bottom:16px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+label{
+  display:block;font-size:.75rem;font-weight:600;color:var(--text2);
+  text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;
+}
+input[type=text],input[type=number],textarea,select{
+  width:100%;background:var(--surface);border:1px solid var(--border2);
+  color:var(--text);font-family:'Inter',sans-serif;font-size:.88rem;
+  padding:10px 14px;border-radius:8px;outline:none;
+  transition:border-color .2s,box-shadow .2s;
+}
+input[type=text]:focus,input[type=number]:focus,textarea:focus,select:focus{
+  border-color:var(--accent);box-shadow:0 0 0 3px rgba(79,142,247,.12);
+}
+input[type=text]::placeholder,textarea::placeholder{color:var(--text3)}
+textarea{resize:vertical;min-height:80px}
+select option{background:var(--surface)}
+
+/* ── OUTPUT AREAS ── */
+.output-box{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:10px;padding:18px;margin-top:16px;
+}
+.output-box h4{font-size:.82rem;font-weight:700;color:var(--text2);margin-bottom:12px;text-transform:uppercase;letter-spacing:.07em}
+
+/* ── TABLE GENERIC ── */
+.data-table{width:100%;border-collapse:collapse;font-size:.82rem}
+.data-table th{
+  background:var(--surface2);color:var(--text2);font-weight:700;
+  font-size:.72rem;text-transform:uppercase;letter-spacing:.07em;
+  padding:10px 12px;text-align:left;border-bottom:1px solid var(--border2);
+}
+.data-table td{
+  padding:9px 12px;border-bottom:1px solid var(--border);
+  color:var(--text);vertical-align:top;
+}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tr:hover td{background:rgba(255,255,255,.02)}
+input.cell-input{
+  background:transparent;border:none;border-bottom:1px solid var(--border2);
+  border-radius:0;padding:4px 6px;width:100%;color:var(--text);font-size:.82rem;
+  outline:none;
+}
+input.cell-input:focus{border-color:var(--accent);box-shadow:none}
+
+/* ── PROJECT CHARTER SPECIFIC ── */
+.charter-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.charter-section-label{
+  grid-column:1/-1;font-size:.68rem;font-weight:700;color:var(--accent2);
+  text-transform:uppercase;letter-spacing:.12em;padding:10px 0 4px;
+  border-bottom:1px solid var(--border);margin-bottom:4px;
+}
+
+/* ── SIPOC VISUAL ── */
+.sipoc-wrap{overflow-x:auto}
+.sipoc-table{min-width:700px;width:100%;border-collapse:separate;border-spacing:8px}
+.sipoc-header{
+  padding:10px;text-align:center;font-size:.72rem;font-weight:800;
+  text-transform:uppercase;letter-spacing:.1em;border-radius:8px 8px 0 0;
+}
+.sipoc-header.s{background:rgba(79,142,247,.15);color:var(--accent2)}
+.sipoc-header.i{background:rgba(45,212,160,.1);color:var(--measure)}
+.sipoc-header.p{background:rgba(244,114,43,.1);color:var(--improve)}
+.sipoc-header.o{background:rgba(168,85,247,.1);color:var(--analyze)}
+.sipoc-header.c{background:rgba(239,68,68,.1);color:var(--control)}
+.sipoc-cell{
+  background:var(--surface);border:1px solid var(--border2);
+  border-radius:8px;padding:8px;vertical-align:top;
+}
+.sipoc-cell textarea{
+  border:none;background:transparent;resize:none;
+  min-height:60px;font-size:.8rem;padding:4px;
+}
+.sipoc-cell textarea:focus{box-shadow:none;border:none}
+
+/* ── FISHBONE ── */
+.fishbone-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fb-category{background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:14px}
+.fb-cat-label{font-size:.72rem;font-weight:800;color:var(--text2);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px}
+.fb-items{display:flex;flex-direction:column;gap:6px}
+.fb-item-row{display:flex;gap:6px}
+.fb-item-row input{flex:1}
+.fb-add-btn{
+  background:none;border:1px dashed var(--border2);color:var(--text3);
+  border-radius:6px;padding:5px 10px;cursor:pointer;font-size:.75rem;
+  font-family:'Inter',sans-serif;margin-top:8px;width:100%;transition:all .2s;
+}
+.fb-add-btn:hover{border-color:var(--accent);color:var(--accent)}
+.svg-fishbone{width:100%;height:320px;margin-top:16px;background:var(--surface);border-radius:12px}
+
+/* ── EFFORT-BENEFIT MATRIX ── */
+.matrix-grid{
+  width:100%;aspect-ratio:1;max-height:380px;
+  background:var(--surface);border-radius:12px;position:relative;overflow:hidden;
+  border:1px solid var(--border2);
+}
+.quadrant{position:absolute;display:flex;align-items:flex-end;padding:8px;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;opacity:.4}
+.q-tl{top:0;left:0;width:50%;height:50%;border-right:1px dashed var(--border2);border-bottom:1px dashed var(--border2);color:var(--yellow)}
+.q-tr{top:0;right:0;width:50%;height:50%;border-bottom:1px dashed var(--border2);color:var(--green);align-items:flex-end;justify-content:flex-end}
+.q-bl{bottom:0;left:0;width:50%;height:50%;border-right:1px dashed var(--border2);color:var(--red);align-items:flex-start}
+.q-br{bottom:0;right:0;width:50%;height:50%;color:var(--text3);align-items:flex-start;justify-content:flex-end}
+.matrix-dot{
+  position:absolute;width:26px;height:26px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.65rem;font-weight:800;color:var(--white);cursor:default;
+  transform:translate(-50%,-50%);transition:transform .3s;z-index:2;
+  border:2px solid rgba(255,255,255,.2);
+}
+.matrix-dot:hover{transform:translate(-50%,-50%) scale(1.3)}
+.axis-label{position:absolute;font-size:.67rem;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.07em}
+.ax-x{bottom:6px;left:50%;transform:translateX(-50%)}
+.ax-y{top:50%;left:6px;transform:translateY(-50%) rotate(-90deg)}
+
+/* ── CONTROL CHART ── */
+.chart-wrap{background:var(--surface);border-radius:12px;padding:16px;margin-top:12px}
+.chart-wrap canvas{max-height:280px}
+.control-stats{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px;
+}
+.cstat{background:var(--surface2);border-radius:8px;padding:12px;text-align:center}
+.cstat-val{font-size:1.2rem;font-weight:800;color:var(--white)}
+.cstat-lbl{font-size:.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-top:3px}
+
+/* ── FMEA ── */
+.rpn-badge{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-width:52px;padding:4px 10px;border-radius:20px;
+  font-size:.8rem;font-weight:800;
+}
+.rpn-low{background:rgba(45,212,160,.15);color:var(--measure)}
+.rpn-mid{background:rgba(245,158,11,.15);color:var(--yellow)}
+.rpn-high{background:rgba(239,68,68,.15);color:var(--red)}
+
+/* ── HIDDEN / SEARCH ── */
+.hidden{display:none!important}
+#noResults{display:none;text-align:center;padding:60px 0;color:var(--text3)}
+#noResults i{font-size:2.5rem;margin-bottom:12px;display:block;opacity:.25}
+
+/* ── FOOTER ── */
+.site-footer{
+  background:var(--bg2);border-top:1px solid var(--border);
+  padding:4rem 2rem 2.5rem;margin-top:80px;
+}
+.footer-grid{
+  max-width:1200px;margin:0 auto;
+  display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;margin-bottom:3rem;
+}
+.footer-brand p{color:var(--text2);font-size:.85rem;line-height:1.7;margin-top:.75rem;max-width:280px}
+.footer-col h4{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:1rem}
+.footer-col a{display:block;color:var(--text2);font-size:.85rem;text-decoration:none;margin-bottom:.6rem;transition:color .2s}
+.footer-col a:hover{color:var(--white)}
+.footer-bottom{
+  max-width:1200px;margin:0 auto;padding-top:1.5rem;
+  border-top:1px solid var(--border);display:flex;
+  justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;
+}
+.footer-bottom p{font-size:.78rem;color:var(--text3)}
+.footer-bottom a{color:var(--accent);text-decoration:none}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .footer-grid{grid-template-columns:1fr 1fr}
+  .nav-links{display:none}
+  .nav-hamburger{display:flex}
+}
+@media(max-width:640px){
+  .hero{padding:100px 1.25rem 50px}
+  .tool-grid{grid-template-columns:1fr}
+  .form-row,.form-row-3,.charter-grid,.fishbone-grid,.control-stats{grid-template-columns:1fr}
+  .site-nav{padding:0 1.25rem}
+  .modal-body{padding:16px}
+  .modal-header{padding:16px 18px}
+  .modal-actions{padding:14px 18px}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ NAV ══ -->
+<nav class="site-nav">
+  <a href="index.html" class="nav-brand">CuriousTo<em>Solve</em></a>
+  <div class="nav-links">
+    <a href="index.html#solver">Problem Solver</a>
+    <a href="index.html#tools">Tools</a>
+    <a href="six-sigma-tools.html" class="active">Six Sigma Toolkit</a>
+    <a href="index.html#cases">Case Studies</a>
+    <a href="index.html#blog">Blog</a>
+    <a href="index.html#about">About</a>
+    <a href="index.html#subscribe" class="nav-cta">Subscribe</a>
+  </div>
+  <button class="nav-hamburger" onclick="document.querySelector('.nav-links').style.display='flex';document.querySelector('.nav-links').style.flexDirection='column';document.querySelector('.nav-links').style.position='fixed';document.querySelector('.nav-links').style.top='68px';document.querySelector('.nav-links').style.left='0';document.querySelector('.nav-links').style.right='0';document.querySelector('.nav-links').style.background='var(--bg2)';document.querySelector('.nav-links').style.padding='1rem';document.querySelector('.nav-links').style.borderBottom='1px solid var(--border)'"><i class="fa-solid fa-bars"></i></button>
+</nav>
+
+<!-- ══ HERO ══ -->
+<section class="hero">
+  <div class="hero-badge"><i class="fa-solid fa-diagram-project"></i>DMAIC Methodology · 42 Interactive Tools</div>
+  <h1>Lean Six Sigma<br/><em>Digital Toolkit</em></h1>
+  <p>Interactive tools to support DMAIC problem solving. Convert structured thinking into action — from defining the problem to sustaining the gains.</p>
+  <div class="search-row">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input type="text" id="searchInput" placeholder="Search tools — e.g. FMEA, SIPOC, Fishbone…" autocomplete="off"/>
+  </div>
+  <div id="searchMeta"></div>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-num">42</div><div class="stat-label">Tools</div></div>
+    <div class="stat"><div class="stat-num">5</div><div class="stat-label">DMAIC Phases</div></div>
+    <div class="stat"><div class="stat-num">6</div><div class="stat-label">Interactive</div></div>
+    <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Browser-Based</div></div>
+  </div>
+</section>
+
+<!-- PHASE TABS -->
+<div class="phase-tabs">
+  <button class="ptab all active" data-phase="all"><i class="fa-solid fa-grip"></i>All Tools</button>
+  <button class="ptab define" data-phase="define"><i class="fa-solid fa-bullseye"></i>Define</button>
+  <button class="ptab measure" data-phase="measure"><i class="fa-solid fa-ruler-combined"></i>Measure</button>
+  <button class="ptab analyze" data-phase="analyze"><i class="fa-solid fa-magnifying-glass-chart"></i>Analyze</button>
+  <button class="ptab improve" data-phase="improve"><i class="fa-solid fa-arrow-trend-up"></i>Improve</button>
+  <button class="ptab control" data-phase="control"><i class="fa-solid fa-shield-halved"></i>Control</button>
+</div>
+
+<main>
+
+<!-- ════ DEFINE ════ -->
+<section class="phase-section define" data-phase="define" id="s-define">
+  <div class="phase-header">
+    <div class="ph-dot"></div>
+    <h2 class="ph-title">Define</h2>
+    <span class="ph-count">8 Tools</span>
+  </div>
+  <div class="tool-grid">
+    <div class="tool-card" data-name="Project Charter" data-tool="project-charter">
+      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-file-contract"></i></div><span class="card-interactive-badge">Interactive</span></div>
+      <div class="card-title">Project Charter</div>
+      <p class="card-desc">Define scope, objectives, team, timeline, and business case. Formal project authorisation document.</p>
+      <button class="card-btn" onclick="openTool('project-charter')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+    <div class="tool-card" data-name="SIPOC Diagram" data-tool="sipoc">
+      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-diagram-next"></i></div><span class="card-interactive-badge">Interactive</span></div>
+      <div class="card-title">SIPOC Diagram</div>
+      <p class="card-desc">Map Suppliers, Inputs, Process, Outputs, and Customers at a high level to frame process scope.</p>
+      <button class="card-btn" onclick="openTool('sipoc')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+    <div class="tool-card" data-name="Stakeholder Analysis">
+      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-people-group"></i></div></div>
+      <div class="card-title">Stakeholder Analysis</div>
+      <p class="card-desc">Identify stakeholders, assess influence and interest, and plan targeted engagement strategies.</p>
+      <button class="card-btn" onclick="comingSoon('Stakeholder Analysis')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+    <div class="tool-card" data-name="Risk Analysis">
+      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-triangle-exclamation"></i></div></div>
+      <div class="card-title">Risk Analysis</div>
+      <p class="card-desc">Identify project risks, evaluate likelihood and impact, and define mitigation actions proactively.</p>
+      <button class="card-btn" onclick="comingSoon('Risk Analysis')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+    <div class="tool-card" data-name="Project Review">
+      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-clipboard-check"></i></div></div>
+      <div class="card-title">Project Review</div>
+      <p class="card-desc">Gate review framework to assess project health and readiness to advance to the next DMAIC phase.</p>
+      <button class="card-btn" onclick="comingSoon('Project Review')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+    <div class="tool-card" data-name="Define Checklist">
+      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-list-check"></i></div></div>
+      <div class="card-title">Define Checklist</div>
+      <p class="card-desc">Phase-exit checklist confirming all Define deliverables are complete before advancing to Measure.</p>
+      <button class="card-btn" onclick="comingSoon('Define Checklist')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+    <div class="tool-card" data-name="Operational Definition">
+      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-book-open"></i></div></div>
+      <div class="card-title">Operational Definition</div>
+      <p class="card-desc">Define key metrics and terms with precision so everyone measures data consistently across the project.</p>
+      <button class="card-btn" onclick="comingSoon('Operational Definition')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+    <div class="tool-card" data-name="Communication Plan">
+      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-envelopes-bulk"></i></div></div>
+      <div class="card-title">Communication Plan</div>
+      <p class="card-desc">Outline who needs what information, in what format, and how frequently throughout the project lifecycle.</p>
+      <button class="card-btn" onclick="comingSoon('Communication Plan')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+  </div>
+</section>
+
+<!-- ════ MEASURE ════ -->
+<section class="phase-section measure" data-phase="measure" id="s-measure">
+  <div class="phase-header">
+    <div class="ph-dot"></div>
+    <h2 class="ph-title">Measure</h2>
+    <span class="ph-count">11 Tools</span>
+  </div>
+  <div class="tool-grid">
+    <div class="tool-card" data-name="Control Charts I-MR" data-tool="control-chart">
+      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-chart-line"></i></div><span class="card-interactive-badge">Interactive</span></div>
+      <div class="card-title">Control Charts (I-MR)</div>
+      <p class="card-desc">Individuals and Moving Range charts for monitoring process stability with real-time Chart.js visualisation.</p>
+      <button class="card-btn" onclick="openTool('control-chart')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+    <div class="tool-card" data-name="Data Collection Plan">
+      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-table-list"></i></div></div>
+      <div class="card-title">Data Collection Plan</div>
+      <p class="card-desc">Structure what data to collect, how to collect it, who is responsible, and how it will be validated.</p>
+      <button class="card-btn" onclick="comingSoon('Data Collection Plan')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+    <div class="tool-card" data-name="Process Flow Chart">
+      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-sitemap"></i></div></div>
+      <div class="card-title">Process Flow Chart</div>
+      <p class="card-desc">Step-by-step visual map of the current process to identify waste, rework loops, and hand-off points.</p>
+      <button class="card-btn" onclick="comingSoon('Process Flow Chart')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+    <div class="tool-card" data-name="Value Stream Mapping">
+      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-route"></i></div></div>
+      <div class="card-title">Value Stream Mapping</div>
+      <p class="card-desc">Visualise the entire flow of materials and information to distinguish value-adding from waste steps.</p>
+      <button class="card-btn" onclick="comingSoon('Value Stream Mapping')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+    <div class="tool-card" data-name="Measurement System Analysis">
+      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-microscope"></i></div></div>
+      <div class="card-title">Measurement System Analysis</div>
+      <p class="card-desc">Evaluate reliability and accuracy of your measurement system to ensure data quality before analysis.</p>
+      <button class="card-btn" onclick="comingSoon('Measurement System Analysis')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+    <div class="tool-card" data-name="Sample Size Calculator Continuous">
+      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-calculator"></i></div></div>
+      <div class="card-title">Sample Size Calculator (Continuous)</div>
+      <p class="card-desc">Calculate the statistically appropriate sample size for continuous data studies with confidence and power.</p>
+      <button class="card-btn" onclick="comingSoon('Sample Size Calculator')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+    <div class="tool-card" data-name="Sample Size Calculator Discrete">
+      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-calculator"></i></div></div>
+      <div class="card-title">Sample Size Calculator (Discrete)</div>
+      <p class="card-desc">Determine right sample size for proportion and defect-rate studies using binomial assumptions.</p>
+      <button class="card-btn" onclick="comingSoon('Sample Size Calculator Discrete')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+    <div class="tool-card" data-name="Gage R&R Continuous">
+      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-gauge-high"></i></div></div>
+      <div class="card-title">Gage R&amp;R (Continuous)</div>
+      <p class="card-desc">Quantify measurement repeatability and reproducibility to validate precision of gauges and inspectors.</p>
+      <button class="card-btn" onclick="comingSoon('Gage R&R Continuous')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+    <div class="tool-card" data-name="Gage R&R Discrete">
+      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-gauge"></i></div></div>
+      <div class="card-title">Gage R&amp;R (Discrete)</div>
+      <p class="card-desc">Assess attribute measurement system agreement using kappa statistics for consistent pass/fail decisions.</p>
+      <button class="card-btn" onclick="comingSoon('Gage R&R Discrete')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+    <div class="tool-card" data-name="Process Performance Analysis">
+      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-chart-bar"></i></div></div>
+      <div class="card-title">Process Performance Analysis</div>
+      <p class="card-desc">Calculate Cp, Cpk, Pp, Ppk and sigma level to baseline current process capability against spec limits.</p>
+      <button class="card-btn" onclick="comingSoon('Process Performance Analysis')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+    <div class="tool-card" data-name="Control Charts Xbar-S">
+      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-chart-area"></i></div></div>
+      <div class="card-title">Control Charts (Xbar-S)</div>
+      <p class="card-desc">Subgroup mean and standard deviation charts for detecting shifts in processes with larger rational subgroups.</p>
+      <button class="card-btn" onclick="comingSoon('Xbar-S Chart')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+  </div>
+</section>
+
+<!-- ════ ANALYZE ════ -->
+<section class="phase-section analyze" data-phase="analyze" id="s-analyze">
+  <div class="phase-header">
+    <div class="ph-dot"></div>
+    <h2 class="ph-title">Analyze</h2>
+    <span class="ph-count">7 Tools</span>
+  </div>
+  <div class="tool-grid">
+    <div class="tool-card" data-name="Fishbone Diagram" data-tool="fishbone">
+      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-fish"></i></div><span class="card-interactive-badge">Interactive</span></div>
+      <div class="card-title">Fishbone Diagram</div>
+      <p class="card-desc">Ishikawa cause-and-effect diagram. Brainstorm causes across 6Ms: Methods, Machines, Materials, Measurements, Environment, People.</p>
+      <button class="card-btn" onclick="openTool('fishbone')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+    <div class="tool-card" data-name="Failure Mode and Effects Analysis FMEA" data-tool="fmea">
+      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-shield-cat"></i></div><span class="card-interactive-badge">Interactive</span></div>
+      <div class="card-title">FMEA</div>
+      <p class="card-desc">Identify failure modes, evaluate Severity × Occurrence × Detection to auto-calculate Risk Priority Numbers.</p>
+      <button class="card-btn" onclick="openTool('fmea')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+    <div class="tool-card" data-name="Root Cause Analysis">
+      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-tree"></i></div></div>
+      <div class="card-title">Root Cause Analysis</div>
+      <p class="card-desc">Structured 5-Why and systematic investigation to drill beneath symptoms to the true drivers of defects.</p>
+      <button class="card-btn" onclick="comingSoon('Root Cause Analysis')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+    <div class="tool-card" data-name="Potential Causes Matrix">
+      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-table-cells"></i></div></div>
+      <div class="card-title">Potential Causes Matrix</div>
+      <p class="card-desc">Prioritisation matrix linking potential causes to output metrics and scoring their relative importance.</p>
+      <button class="card-btn" onclick="comingSoon('Potential Causes Matrix')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+    <div class="tool-card" data-name="Verification of Potential Causes">
+      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-check-double"></i></div></div>
+      <div class="card-title">Verification of Potential Causes</div>
+      <p class="card-desc">Guides statistical and graphical hypothesis tests to confirm or refute suspected root causes with data.</p>
+      <button class="card-btn" onclick="comingSoon('Verification of Potential Causes')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+    <div class="tool-card" data-name="Result Process Analysis">
+      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-arrows-split-up-and-left"></i></div></div>
+      <div class="card-title">Result Process Analysis</div>
+      <p class="card-desc">Connects Y (output) to X's (inputs) using graphical and statistical analysis to confirm causal relationships.</p>
+      <button class="card-btn" onclick="comingSoon('Result Process Analysis')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+    <div class="tool-card" data-name="Root Cause Summary">
+      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-file-circle-check"></i></div></div>
+      <div class="card-title">Root Cause Summary</div>
+      <p class="card-desc">Consolidate verified root causes with supporting evidence, ready for the Analyze phase gate review.</p>
+      <button class="card-btn" onclick="comingSoon('Root Cause Summary')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+  </div>
+</section>
+
+<!-- ════ IMPROVE ════ -->
+<section class="phase-section improve" data-phase="improve" id="s-improve">
+  <div class="phase-header">
+    <div class="ph-dot"></div>
+    <h2 class="ph-title">Improve</h2>
+    <span class="ph-count">8 Tools</span>
+  </div>
+  <div class="tool-grid">
+    <div class="tool-card" data-name="Effort vs Benefit Matrix" data-tool="effort-benefit">
+      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-chart-scatter"></i></div><span class="card-interactive-badge">Interactive</span></div>
+      <div class="card-title">Effort vs Benefit Matrix</div>
+      <p class="card-desc">Enter solutions and automatically plot them on a 2×2 priority matrix. Quick wins vs strategic investments.</p>
+      <button class="card-btn" onclick="openTool('effort-benefit')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+    <div class="tool-card" data-name="Potential Solutions Generator">
+      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-lightbulb"></i></div></div>
+      <div class="card-title">Potential Solutions Generator</div>
+      <p class="card-desc">Structured brainstorming framework to generate and organise creative solutions addressing root causes.</p>
+      <button class="card-btn" onclick="comingSoon('Potential Solutions Generator')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+    <div class="tool-card" data-name="Criteria Based Solution Selection">
+      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-sliders"></i></div></div>
+      <div class="card-title">Criteria Based Solution Selection</div>
+      <p class="card-desc">Weighted scoring matrix evaluating solutions against defined criteria for objective decision-making.</p>
+      <button class="card-btn" onclick="comingSoon('Criteria Based Solution Selection')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+    <div class="tool-card" data-name="Cost Benefit Analysis">
+      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-scale-balanced"></i></div></div>
+      <div class="card-title">Cost Benefit Analysis</div>
+      <p class="card-desc">Quantify implementation costs against projected financial and operational benefits to build the business case.</p>
+      <button class="card-btn" onclick="comingSoon('Cost Benefit Analysis')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+    <div class="tool-card" data-name="Implementation Plan">
+      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-calendar-check"></i></div></div>
+      <div class="card-title">Implementation Plan</div>
+      <p class="card-desc">Action plan with owners, milestones, dependencies, and success criteria for rolling out improvements.</p>
+      <button class="card-btn" onclick="comingSoon('Implementation Plan')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+    <div class="tool-card" data-name="Pilot Results Tracker">
+      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-flask"></i></div></div>
+      <div class="card-title">Pilot Results Tracker</div>
+      <p class="card-desc">Capture and compare pilot performance data against baseline metrics to validate solution effectiveness.</p>
+      <button class="card-btn" onclick="comingSoon('Pilot Results Tracker')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+    <div class="tool-card" data-name="RACI Matrix">
+      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-user-gear"></i></div></div>
+      <div class="card-title">RACI Matrix</div>
+      <p class="card-desc">Assign Responsible, Accountable, Consulted, Informed roles for every task to eliminate ambiguity.</p>
+      <button class="card-btn" onclick="comingSoon('RACI Matrix')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+    <div class="tool-card" data-name="Should-Be Process Flow Chart">
+      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-diagram-successor"></i></div></div>
+      <div class="card-title">Should-Be Process Flow</div>
+      <p class="card-desc">Design the future-state process map after improvements, providing a clear visual target for the team.</p>
+      <button class="card-btn" onclick="comingSoon('Should-Be Process Flow')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+  </div>
+</section>
+
+<!-- ════ CONTROL ════ -->
+<section class="phase-section control" data-phase="control" id="s-control">
+  <div class="phase-header">
+    <div class="ph-dot"></div>
+    <h2 class="ph-title">Control</h2>
+    <span class="ph-count">8 Tools</span>
+  </div>
+  <div class="tool-grid">
+    <div class="tool-card" data-name="Monitoring and Reaction Plan">
+      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-bell"></i></div></div>
+      <div class="card-title">Monitoring and Reaction Plan</div>
+      <p class="card-desc">Define what to monitor, control limits, who reacts, and how — defending process gains in real time.</p>
+      <button class="card-btn" onclick="comingSoon('Monitoring and Reaction Plan')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+    <div class="tool-card" data-name="Control Chart Dashboard">
+      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-display-chart-up"></i></div></div>
+      <div class="card-title">Control Chart Dashboard</div>
+      <p class="card-desc">Visual real-time dashboard tracking key output metrics and flagging out-of-control signals quickly.</p>
+      <button class="card-btn" onclick="comingSoon('Control Chart Dashboard')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+    <div class="tool-card" data-name="Benefit Calculation Tool">
+      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-coins"></i></div></div>
+      <div class="card-title">Benefit Calculation Tool</div>
+      <p class="card-desc">Track and calculate realised hard and soft financial benefits post-implementation to report ROI.</p>
+      <button class="card-btn" onclick="comingSoon('Benefit Calculation Tool')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+    <div class="tool-card" data-name="Benefit Approval Tracker">
+      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-stamp"></i></div></div>
+      <div class="card-title">Benefit Approval Tracker</div>
+      <p class="card-desc">Manage finance sign-off workflow for claimed project benefits to ensure governance of reported savings.</p>
+      <button class="card-btn" onclick="comingSoon('Benefit Approval Tracker')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+    <div class="tool-card" data-name="Sustain Audit Protocol">
+      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-magnifying-glass-dollar"></i></div></div>
+      <div class="card-title">Sustain Audit Protocol</div>
+      <p class="card-desc">Periodic audit template verifying that process improvements and control measures remain in place.</p>
+      <button class="card-btn" onclick="comingSoon('Sustain Audit Protocol')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+    <div class="tool-card" data-name="Handover Protocol">
+      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-handshake"></i></div></div>
+      <div class="card-title">Handover Protocol</div>
+      <p class="card-desc">Structured process for transferring project ownership and control responsibilities with full documentation.</p>
+      <button class="card-btn" onclick="comingSoon('Handover Protocol')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+    <div class="tool-card" data-name="Lesson Learned Tracker">
+      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-graduation-cap"></i></div></div>
+      <div class="card-title">Lesson Learned Tracker</div>
+      <p class="card-desc">Capture team insights, pitfalls, and best practices to accelerate future improvement initiatives.</p>
+      <button class="card-btn" onclick="comingSoon('Lesson Learned Tracker')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+    <div class="tool-card" data-name="Action Item Log">
+      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-circle-dot"></i></div></div>
+      <div class="card-title">Action Item Log</div>
+      <p class="card-desc">Centralised tracker of open action items, owners, due dates, and status through project close.</p>
+      <button class="card-btn" onclick="comingSoon('Action Item Log')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+  </div>
+</section>
+
+<div id="noResults"><i class="fa-solid fa-face-frown-open"></i>No tools match your search. Try a different keyword.</div>
+</main>
+
+<!-- ══ FOOTER ══ -->
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div style="font-size:1.1rem;font-weight:800;color:var(--white)">CuriousTo<span style="color:var(--accent);font-style:italic">Solve</span></div>
+      <p>A structured thinking platform for problem solvers. Built on Six Sigma, Lean, and genuine curiosity about how things break — and how to fix them.</p>
+    </div>
+    <div class="footer-col"><h4>Tools</h4>
+      <a href="#">Problem Solver</a><a href="#">5 Why Analysis</a>
+      <a href="#">Fishbone Diagram</a><a href="#">Pareto Chart</a><a href="#">SIPOC</a>
+    </div>
+    <div class="footer-col"><h4>Content</h4>
+      <a href="#">Case Studies</a><a href="#">Blog</a>
+      <a href="#">Root Cause Analysis</a><a href="#">Lean Thinking</a><a href="#">Six Sigma</a>
+    </div>
+    <div class="footer-col"><h4>Platform</h4>
+      <a href="#">About</a><a href="#">Newsletter</a>
+      <a href="#">Learning Hub</a><a href="#">Contact</a><a href="#">Privacy Policy</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 CuriousToSolve — All rights reserved.</p>
+    <p>Built for problem solvers worldwide · <a href="#">curioustosolve.com</a></p>
+  </div>
+</footer>
+
+<!-- ══════════════════════════════════════════════
+     MODAL SHELL
+═══════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeOnBackdrop(event)">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <div class="modal-phase-dot" id="modalDot"></div>
+      <span class="modal-title" id="modalTitle">Tool</span>
+      <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-actions" id="modalActions"></div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════
+   TOOL REGISTRY
+═══════════════════════════════════════════ */
+const TOOLS = {
+  'project-charter': { title:'Project Charter', phase:'define', color:'var(--define)' },
+  'sipoc':           { title:'SIPOC Diagram',   phase:'define', color:'var(--define)' },
+  'fishbone':        { title:'Fishbone Diagram', phase:'analyze', color:'var(--analyze)' },
+  'fmea':            { title:'FMEA — Failure Mode & Effects Analysis', phase:'analyze', color:'var(--analyze)' },
+  'effort-benefit':  { title:'Effort vs Benefit Matrix', phase:'improve', color:'var(--improve)' },
+  'control-chart':   { title:'Control Chart (I-MR)', phase:'measure', color:'var(--measure)' },
+};
+
+let activeChart = null;
+
+function openTool(id){
+  const t = TOOLS[id];
+  if(!t) return;
+  document.getElementById('modalTitle').textContent = t.title;
+  document.getElementById('modalDot').style.background = t.color;
+  document.getElementById('modalBody').innerHTML = renderTool(id);
+  document.getElementById('modalActions').innerHTML = renderActions(id);
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow='hidden';
+  if(id==='control-chart') setTimeout(()=>initChart(),80);
+  if(id==='fishbone') initFishbone();
+  if(id==='effort-benefit') renderMatrix();
+}
+function closeModal(){
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow='';
+  if(activeChart){ activeChart.destroy(); activeChart=null; }
+}
+function closeOnBackdrop(e){ if(e.target===document.getElementById('modalOverlay')) closeModal(); }
+function comingSoon(n){ alert(`"${n}" template coming soon! Check back for the next update.`); }
+
+/* ═══════════════════════════════════════════
+   RENDER TOOL BODIES
+═══════════════════════════════════════════ */
+function renderTool(id){
+  if(id==='project-charter') return tmplProjectCharter();
+  if(id==='sipoc')           return tmplSIPOC();
+  if(id==='fishbone')        return tmplFishbone();
+  if(id==='fmea')            return tmplFMEA();
+  if(id==='effort-benefit')  return tmplEffortBenefit();
+  if(id==='control-chart')   return tmplControlChart();
+  return '';
+}
+function renderActions(id){
+  const base = `<button class="btn btn-secondary" onclick="closeModal()"><i class="fa-solid fa-xmark"></i> Close</button>`;
+  if(id==='project-charter') return `<button class="btn btn-primary" onclick="exportCharter()"><i class="fa-solid fa-file-arrow-down"></i> Export PDF</button><button class="btn btn-green" onclick="exportCharterCSV()"><i class="fa-solid fa-table"></i> Export CSV</button>${base}`;
+  if(id==='sipoc')           return `<button class="btn btn-green" onclick="exportSIPOC()"><i class="fa-solid fa-table"></i> Export CSV</button>${base}`;
+  if(id==='fishbone')        return `<button class="btn btn-primary" onclick="drawFishbone()"><i class="fa-solid fa-wand-magic-sparkles"></i> Generate Diagram</button><button class="btn btn-secondary" onclick="exportFishSVG()"><i class="fa-solid fa-image"></i> Export SVG</button>${base}`;
+  if(id==='fmea')            return `<button class="btn btn-primary" onclick="addFMEARow()"><i class="fa-solid fa-plus"></i> Add Row</button><button class="btn btn-green" onclick="exportFMEA()"><i class="fa-solid fa-table"></i> Export CSV</button>${base}`;
+  if(id==='effort-benefit')  return `<button class="btn btn-primary" onclick="addEBSolution()"><i class="fa-solid fa-plus"></i> Add Solution</button><button class="btn btn-secondary" onclick="renderMatrix()"><i class="fa-solid fa-rotate"></i> Refresh Matrix</button>${base}`;
+  if(id==='control-chart')   return `<button class="btn btn-primary" onclick="updateChart()"><i class="fa-solid fa-chart-line"></i> Plot Chart</button><button class="btn btn-green" onclick="exportChartCSV()"><i class="fa-solid fa-table"></i> Export CSV</button>${base}`;
+  return base;
+}
+
+/* ─── PROJECT CHARTER ─── */
+function tmplProjectCharter(){
+  return `
+  <div class="charter-grid">
+    <div class="charter-section-label">Project Identification</div>
+    <div class="form-group"><label>Project Title</label><input type="text" id="pc-title" placeholder="e.g. Reduce Invoice Processing Time"/></div>
+    <div class="form-group"><label>Project Sponsor</label><input type="text" id="pc-sponsor" placeholder="e.g. CFO / VP Operations"/></div>
+    <div class="form-group"><label>Project Leader</label><input type="text" id="pc-leader" placeholder="Name + Belt Level"/></div>
+    <div class="form-group"><label>Department / Area</label><input type="text" id="pc-dept" placeholder="e.g. Finance Operations"/></div>
+
+    <div class="charter-section-label">Problem & Goal</div>
+    <div class="form-group" style="grid-column:1/-1"><label>Problem Statement</label><textarea id="pc-problem" placeholder="What is the problem? When/where does it occur? What is the impact (quantified)?"></textarea></div>
+    <div class="form-group" style="grid-column:1/-1"><label>Goal Statement</label><textarea id="pc-goal" placeholder="What specific improvement do we want to achieve, by how much, and by when?"></textarea></div>
+    <div class="form-group" style="grid-column:1/-1"><label>Business Impact</label><textarea id="pc-impact" placeholder="Financial savings, customer satisfaction, compliance, efficiency gains…"></textarea></div>
+
+    <div class="charter-section-label">Scope & Timeline</div>
+    <div class="form-group"><label>In Scope</label><textarea id="pc-inscope" placeholder="What IS included in this project?"/></textarea></div>
+    <div class="form-group"><label>Out of Scope</label><textarea id="pc-outscope" placeholder="What is NOT included?"/></textarea></div>
+    <div class="form-group"><label>Start Date</label><input type="text" id="pc-start" placeholder="DD/MM/YYYY"/></div>
+    <div class="form-group"><label>Target Completion</label><input type="text" id="pc-end" placeholder="DD/MM/YYYY"/></div>
+
+    <div class="charter-section-label">Team Members</div>
+    <div class="form-group" style="grid-column:1/-1"><label>Team Members &amp; Roles</label><textarea id="pc-team" placeholder="Name | Role | Availability (e.g. John Smith | Black Belt | 80%)&#10;One per line…"></textarea></div>
+    <div class="form-group" style="grid-column:1/-1"><label>Key Milestones</label><textarea id="pc-milestones" placeholder="Define | Measure | Analyze | Improve | Control target dates…"></textarea></div>
+  </div>`;
+}
+function exportCharter(){
+  const {jsPDF} = window.jspdf;
+  const doc = new jsPDF();
+  doc.setFont('helvetica','bold'); doc.setFontSize(16); doc.text('PROJECT CHARTER',14,18);
+  doc.setFont('helvetica','normal'); doc.setFontSize(10);
+  const fields=[['Project Title',g('pc-title')],['Sponsor',g('pc-sponsor')],['Leader',g('pc-leader')],['Department',g('pc-dept')],['Problem Statement',g('pc-problem')],['Goal Statement',g('pc-goal')],['Business Impact',g('pc-impact')],['In Scope',g('pc-inscope')],['Out of Scope',g('pc-outscope')],['Start Date',g('pc-start')],['Target Completion',g('pc-end')],['Team Members',g('pc-team')],['Milestones',g('pc-milestones')]];
+  let y=30;
+  fields.forEach(([l,v])=>{
+    doc.setFont('helvetica','bold'); doc.text(l+':',14,y);
+    doc.setFont('helvetica','normal');
+    const lines=doc.splitTextToSize(v||'—',170); doc.text(lines,14,y+5); y+=10+lines.length*5;
+    if(y>270){doc.addPage();y=14;}
+  });
+  doc.save('project-charter.pdf');
+}
+function exportCharterCSV(){
+  const rows=[['Field','Value'],['Title',g('pc-title')],['Sponsor',g('pc-sponsor')],['Leader',g('pc-leader')],['Problem',g('pc-problem')],['Goal',g('pc-goal')]];
+  downloadCSV('project-charter.csv',rows);
+}
+
+/* ─── SIPOC ─── */
+function tmplSIPOC(){
+  let rows='';
+  for(let i=0;i<6;i++) rows+=`<tr>
+    <td class="sipoc-cell"><input class="cell-input" placeholder="Supplier ${i+1}"/></td>
+    <td class="sipoc-cell"><input class="cell-input" placeholder="Input ${i+1}"/></td>
+    <td class="sipoc-cell"><input class="cell-input" placeholder="Step ${i+1}"/></td>
+    <td class="sipoc-cell"><input class="cell-input" placeholder="Output ${i+1}"/></td>
+    <td class="sipoc-cell"><input class="cell-input" placeholder="Customer ${i+1}"/></td>
+  </tr>`;
+  return `
+  <div class="form-group"><label>Process Name</label><input type="text" id="sipoc-process" placeholder="e.g. Invoice Processing"/></div>
+  <div class="sipoc-wrap"><table class="sipoc-table">
+    <thead><tr>
+      <th class="sipoc-header s">Suppliers</th>
+      <th class="sipoc-header i">Inputs</th>
+      <th class="sipoc-header p">Process</th>
+      <th class="sipoc-header o">Outputs</th>
+      <th class="sipoc-header c">Customers</th>
+    </tr></thead>
+    <tbody id="sipoc-body">${rows}</tbody>
+  </table></div>`;
+}
+function exportSIPOC(){
+  const rows=[['Suppliers','Inputs','Process','Outputs','Customers']];
+  document.querySelectorAll('#sipoc-body tr').forEach(tr=>{
+    rows.push([...tr.querySelectorAll('input')].map(i=>i.value));
+  });
+  downloadCSV('sipoc-diagram.csv',rows);
+}
+
+/* ─── FISHBONE ─── */
+const fbCats=['Methods','Machines','Materials','Measurements','Environment','People'];
+function tmplFishbone(){
+  let cats='';
+  fbCats.forEach(c=>{
+    cats+=`<div class="fb-category">
+      <div class="fb-cat-label">${c}</div>
+      <div class="fb-items" id="fb-${c}">
+        <div class="fb-item-row"><input class="cell-input" placeholder="Cause…"/></div>
+        <div class="fb-item-row"><input class="cell-input" placeholder="Cause…"/></div>
+      </div>
+      <button class="fb-add-btn" onclick="addFBCause('${c}')"><i class="fa-solid fa-plus"></i> Add Cause</button>
+    </div>`;
+  });
+  return `
+  <div class="form-group"><label>Problem / Effect (right side of diagram)</label><input type="text" id="fb-effect" placeholder="e.g. High invoice processing time"/></div>
+  <div class="fishbone-grid">${cats}</div>
+  <svg class="svg-fishbone" id="fb-svg" viewBox="0 0 860 320"></svg>`;
+}
+function initFishbone(){ setTimeout(drawFishbone,200); }
+function addFBCause(cat){
+  const c=document.getElementById('fb-'+cat);
+  const d=document.createElement('div'); d.className='fb-item-row';
+  d.innerHTML=`<input class="cell-input" placeholder="Cause…"/>`;
+  c.appendChild(d);
+}
+function drawFishbone(){
+  const svg=document.getElementById('fb-svg'); if(!svg) return;
+  const effect=g('fb-effect')||'Problem / Effect';
+  const W=860,H=320,mx=W-80,my=H/2,sx=60,sy=H/2;
+  let out=`<line x1="${sx}" y1="${sy}" x2="${mx}" y2="${my}" stroke="#3a7bd5" stroke-width="3"/>`;
+  out+=`<rect x="${mx}" y="${my-22}" width="120" height="44" rx="8" fill="#3a7bd5" opacity=".9"/>`;
+  out+=`<text x="${mx+60}" y="${my+5}" text-anchor="middle" fill="white" font-size="11" font-weight="bold">${effect.substring(0,22)}</text>`;
+  const catColors=['#3a7bd5','#2dd4a0','#a855f7','#f4722b','#ef4444','#f59e0b'];
+  fbCats.forEach((cat,idx)=>{
+    const top=idx<3;
+    const bx=80+idx%3*240,by=top?my-90:my+90;
+    const cx=bx+80,cy=top?my-20:my+20;
+    out+=`<line x1="${bx}" y1="${by}" x2="${cx}" y2="${cy}" stroke="${catColors[idx]}" stroke-width="2"/>`;
+    out+=`<line x1="${cx}" y1="${cy}" x2="${cx+100}" y2="${my}" stroke="${catColors[idx]}" stroke-width="1.5" opacity=".4"/>`;
+    out+=`<text x="${bx+8}" y="${by+(top?-6:14)}" fill="${catColors[idx]}" font-size="10" font-weight="700">${cat}</text>`;
+    const inputs=[...document.querySelectorAll(`#fb-${cat} input`)].map(i=>i.value).filter(Boolean);
+    inputs.forEach((cause,ci)=>{
+      const lx=bx+20+ci*38,ly=top?by-22:by+22;
+      out+=`<line x1="${lx}" y1="${by}" x2="${lx}" y2="${by+(top?-8:8)}" stroke="${catColors[idx]}" stroke-width="1" opacity=".5"/>`;
+      out+=`<text x="${lx}" y="${ly}" text-anchor="middle" fill="#94a3b8" font-size="8.5">${cause.substring(0,14)}</text>`;
+    });
+  });
+  svg.innerHTML=out;
+}
+function exportFishSVG(){
+  const svg=document.getElementById('fb-svg');
+  if(!svg){return;}
+  const blob=new Blob([svg.outerHTML],{type:'image/svg+xml'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='fishbone.svg'; a.click();
+}
+
+/* ─── FMEA ─── */
+let fmeaRows=3;
+function tmplFMEA(){
+  let rows='';
+  for(let i=0;i<fmeaRows;i++) rows+=fmeaRow(i);
+  return `
+  <div style="overflow-x:auto">
+  <table class="data-table" id="fmea-table">
+    <thead><tr>
+      <th>#</th><th>Process Step</th><th>Failure Mode</th><th>Effect of Failure</th>
+      <th style="width:60px">SEV<br/><small style="font-size:.65rem;opacity:.6">1-10</small></th>
+      <th style="width:60px">OCC<br/><small style="font-size:.65rem;opacity:.6">1-10</small></th>
+      <th style="width:60px">DET<br/><small style="font-size:.65rem;opacity:.6">1-10</small></th>
+      <th style="width:72px">RPN</th>
+      <th>Recommended Action</th>
+    </tr></thead>
+    <tbody id="fmea-body">${rows}</tbody>
+  </table></div>`;
+}
+function fmeaRow(i){
+  return `<tr id="fmea-row-${i}">
+    <td style="color:var(--text3);font-size:.8rem">${i+1}</td>
+    <td><input class="cell-input" placeholder="Step…"/></td>
+    <td><input class="cell-input" placeholder="Failure mode…"/></td>
+    <td><input class="cell-input" placeholder="Effect…"/></td>
+    <td><input class="cell-input" type="number" min="1" max="10" placeholder="—" oninput="calcRPN(${i})"/></td>
+    <td><input class="cell-input" type="number" min="1" max="10" placeholder="—" oninput="calcRPN(${i})"/></td>
+    <td><input class="cell-input" type="number" min="1" max="10" placeholder="—" oninput="calcRPN(${i})"/></td>
+    <td id="rpn-${i}"><span class="rpn-badge rpn-low">—</span></td>
+    <td><input class="cell-input" placeholder="Action…"/></td>
+  </tr>`;
+}
+function calcRPN(i){
+  const row=document.getElementById('fmea-row-'+i);
+  if(!row) return;
+  const nums=[...row.querySelectorAll('input[type=number]')].map(n=>parseFloat(n.value)||0);
+  const rpn=nums[0]*nums[1]*nums[2];
+  const el=document.getElementById('rpn-'+i);
+  const cls=rpn>=200?'rpn-high':rpn>=80?'rpn-mid':'rpn-low';
+  el.innerHTML=`<span class="rpn-badge ${cls}">${rpn||'—'}</span>`;
+}
+function addFMEARow(){
+  const tbody=document.getElementById('fmea-body');
+  const i=fmeaRows++;
+  tbody.insertAdjacentHTML('beforeend',fmeaRow(i));
+}
+function exportFMEA(){
+  const header=['#','Process Step','Failure Mode','Effect','SEV','OCC','DET','RPN','Action'];
+  const rows=[header];
+  document.querySelectorAll('#fmea-body tr').forEach((tr,idx)=>{
+    const inputs=[...tr.querySelectorAll('input')].map(i=>i.value);
+    const rpn=tr.querySelector('.rpn-badge')?.textContent||'';
+    rows.push([idx+1,...inputs.slice(0,3),...inputs.slice(3,6),rpn,inputs[6]||'']);
+  });
+  downloadCSV('fmea.csv',rows);
+}
+
+/* ─── EFFORT vs BENEFIT ─── */
+let ebSolutions=[
+  {label:'A',name:'Automate approvals',effort:30,benefit:85},
+  {label:'B',name:'Redesign form',effort:20,benefit:55},
+  {label:'C',name:'Train staff',effort:50,benefit:60},
+  {label:'D',name:'New software',effort:90,benefit:95},
+];
+const ebColors=['#4f8ef7','#2dd4a0','#a855f7','#f4722b','#ef4444','#f59e0b','#ec4899'];
+function tmplEffortBenefit(){
+  let rows='';
+  ebSolutions.forEach((s,i)=>{
+    rows+=`<tr>
+      <td style="width:32px;font-weight:800;color:${ebColors[i%ebColors.length]}">${s.label}</td>
+      <td><input class="cell-input" value="${s.name}" oninput="ebSolutions[${i}].name=this.value"/></td>
+      <td><input class="cell-input" type="number" min="0" max="100" value="${s.effort}" style="width:70px" oninput="ebSolutions[${i}].effort=+this.value;renderMatrix()"/></td>
+      <td><input class="cell-input" type="number" min="0" max="100" value="${s.benefit}" style="width:70px" oninput="ebSolutions[${i}].benefit=+this.value;renderMatrix()"/></td>
+    </tr>`;
+  });
+  return `
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start">
+    <div>
+      <table class="data-table">
+        <thead><tr><th>#</th><th>Solution</th><th>Effort (0-100)</th><th>Benefit (0-100)</th></tr></thead>
+        <tbody id="eb-body">${rows}</tbody>
+      </table>
+      <p style="font-size:.72rem;color:var(--text3);margin-top:10px">Values 0–100. Higher effort = harder to implement. Higher benefit = more value.</p>
+    </div>
+    <div>
+      <div class="matrix-grid" id="eb-matrix">
+        <div class="quadrant q-tl">Quick Wins<br/>↗</div>
+        <div class="quadrant q-tr">Strategic<br/>→</div>
+        <div class="quadrant q-bl">Avoid<br/>↙</div>
+        <div class="quadrant q-br">Fill-ins</div>
+        <div class="axis-label ax-x">← Low Effort · High Effort →</div>
+        <div class="axis-label ax-y">Benefit</div>
+      </div>
+    </div>
+  </div>`;
+}
+function renderMatrix(){
+  const m=document.getElementById('eb-matrix'); if(!m) return;
+  m.querySelectorAll('.matrix-dot').forEach(d=>d.remove());
+  ebSolutions.forEach((s,i)=>{
+    const dot=document.createElement('div');
+    dot.className='matrix-dot';
+    dot.style.background=ebColors[i%ebColors.length];
+    dot.style.left=(s.effort)+'%';
+    dot.style.top=(100-s.benefit)+'%';
+    dot.title=`${s.name}\nEffort:${s.effort} Benefit:${s.benefit}`;
+    dot.textContent=s.label;
+    m.appendChild(dot);
+  });
+}
+function addEBSolution(){
+  const label=String.fromCharCode(65+ebSolutions.length);
+  ebSolutions.push({label,name:'New solution',effort:50,benefit:50});
+  const i=ebSolutions.length-1;
+  const s=ebSolutions[i];
+  document.getElementById('eb-body').insertAdjacentHTML('beforeend',`<tr>
+    <td style="width:32px;font-weight:800;color:${ebColors[i%ebColors.length]}">${s.label}</td>
+    <td><input class="cell-input" value="${s.name}" oninput="ebSolutions[${i}].name=this.value"/></td>
+    <td><input class="cell-input" type="number" min="0" max="100" value="${s.effort}" style="width:70px" oninput="ebSolutions[${i}].effort=+this.value;renderMatrix()"/></td>
+    <td><input class="cell-input" type="number" min="0" max="100" value="${s.benefit}" style="width:70px" oninput="ebSolutions[${i}].benefit=+this.value;renderMatrix()"/></td>
+  </tr>`);
+  renderMatrix();
+}
+
+/* ─── CONTROL CHART ─── */
+function tmplControlChart(){
+  return `
+  <div class="form-group">
+    <label>Data Values (comma-separated)</label>
+    <textarea id="cc-data" placeholder="e.g. 12.3, 14.1, 11.8, 15.2, 13.0, 12.7, 16.3, 11.2, 14.8, 13.5, 12.9, 15.7">12.3, 14.1, 11.8, 15.2, 13.0, 12.7, 16.3, 11.2, 14.8, 13.5, 12.9, 15.7, 14.0, 13.2, 11.9</textarea>
+  </div>
+  <div class="form-row">
+    <div class="form-group"><label>Metric Name</label><input type="text" id="cc-name" placeholder="e.g. Processing Time (hrs)" value="Process Measurement"/></div>
+    <div class="form-group"><label>Units</label><input type="text" id="cc-unit" placeholder="e.g. hrs, mm, %" value="units"/></div>
+  </div>
+  <div class="chart-wrap"><canvas id="cc-chart"></canvas></div>
+  <div class="control-stats" id="cc-stats"></div>`;
+}
+function initChart(){ updateChart(); }
+function updateChart(){
+  const raw=g('cc-data').split(',').map(v=>parseFloat(v.trim())).filter(v=>!isNaN(v));
+  if(raw.length<2) return;
+  const n=raw.length;
+  const mean=raw.reduce((a,b)=>a+b,0)/n;
+  const mr=raw.slice(1).map((v,i)=>Math.abs(v-raw[i]));
+  const mrBar=mr.reduce((a,b)=>a+b,0)/mr.length;
+  const ucl=mean+2.66*mrBar, lcl=mean-2.66*mrBar;
+  const labels=raw.map((_,i)=>`${i+1}`);
+  const name=g('cc-name')||'Value';
+
+  if(activeChart){ activeChart.destroy(); activeChart=null; }
+  const ctx=document.getElementById('cc-chart').getContext('2d');
+  activeChart=new Chart(ctx,{
+    type:'line',
+    data:{
+      labels,
+      datasets:[
+        {label:name,data:raw,borderColor:'#4f8ef7',backgroundColor:'rgba(79,142,247,.08)',pointBackgroundColor:raw.map(v=>v>ucl||v<lcl?'#ef4444':'#4f8ef7'),pointRadius:5,tension:.3,borderWidth:2},
+        {label:'UCL',data:Array(n).fill(ucl),borderColor:'#ef4444',borderWidth:1.5,borderDash:[6,4],pointRadius:0},
+        {label:'Mean',data:Array(n).fill(mean),borderColor:'#2dd4a0',borderWidth:1.5,borderDash:[4,4],pointRadius:0},
+        {label:'LCL',data:Array(n).fill(lcl),borderColor:'#f59e0b',borderWidth:1.5,borderDash:[6,4],pointRadius:0},
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:true,
+      plugins:{legend:{labels:{color:'#94a3b8',font:{size:11}}},tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: ${ctx.parsed.y.toFixed(3)}`}}},
+      scales:{x:{ticks:{color:'#5a7094'},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{color:'#5a7094'},grid:{color:'rgba(255,255,255,.06)'}}}
+    }
+  });
+  const violations=raw.filter(v=>v>ucl||v<lcl).length;
+  document.getElementById('cc-stats').innerHTML=`
+    <div class="cstat"><div class="cstat-val">${mean.toFixed(3)}</div><div class="cstat-lbl">Mean (X̄)</div></div>
+    <div class="cstat"><div class="cstat-val" style="color:var(--red)">${ucl.toFixed(3)}</div><div class="cstat-lbl">UCL</div></div>
+    <div class="cstat"><div class="cstat-val" style="color:var(--yellow)">${lcl.toFixed(3)}</div><div class="cstat-lbl">LCL</div></div>
+    <div class="cstat"><div class="cstat-val" style="color:${violations?'var(--red)':'var(--measure)'}">${violations}</div><div class="cstat-lbl">Violations</div></div>`;
+}
+function exportChartCSV(){
+  const raw=g('cc-data').split(',').map(v=>parseFloat(v.trim())).filter(v=>!isNaN(v));
+  const rows=[['Point','Value'],...raw.map((v,i)=>[i+1,v])];
+  downloadCSV('control-chart-data.csv',rows);
+}
+
+/* ═══════════════════════════════════════════
+   UTILITIES
+═══════════════════════════════════════════ */
+function g(id){ return (document.getElementById(id)||{}).value||''; }
+function downloadCSV(filename, rows){
+  const csv=rows.map(r=>r.map(c=>`"${(c||'').toString().replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=filename; a.click();
+}
+
+/* ═══════════════════════════════════════════
+   SEARCH & PHASE FILTER
+═══════════════════════════════════════════ */
+const searchInput=document.getElementById('searchInput');
+const allCards=()=>document.querySelectorAll('.tool-card');
+const allSections=()=>document.querySelectorAll('.phase-section');
+
+searchInput.addEventListener('input',()=>{
+  const q=searchInput.value.trim().toLowerCase();
+  let vis=0;
+  allCards().forEach(card=>{
+    const match=!q||card.dataset.name.toLowerCase().includes(q);
+    card.classList.toggle('hidden',!match);
+    if(match)vis++;
+  });
+  allSections().forEach(s=>{
+    const any=[...s.querySelectorAll('.tool-card')].some(c=>!c.classList.contains('hidden'));
+    s.classList.toggle('hidden',!any);
+  });
+  document.getElementById('noResults').style.display=(vis===0&&q)?'block':'none';
+  document.getElementById('searchMeta').textContent=q?`${vis} tool${vis!==1?'s':''} found`:'';
+});
+
+document.querySelectorAll('.ptab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    document.querySelectorAll('.ptab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    const phase=tab.dataset.phase;
+    allSections().forEach(s=>{
+      s.classList.toggle('hidden',phase!=='all'&&s.dataset.phase!==phase);
+    });
+    searchInput.value='';
+    allCards().forEach(c=>c.classList.remove('hidden'));
+    document.getElementById('searchMeta').textContent='';
+  });
+});
+
+/* ESC to close */
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeModal(); });
+</script>
+</body>
+</html>
