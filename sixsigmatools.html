@@ -533,7 +533,7 @@ input.cell-input:focus{border-color:var(--accent);box-shadow:none}
       <div class="card-top"><div class="card-icon"><i class="fa-solid fa-people-group"></i></div></div>
       <div class="card-title">Stakeholder Analysis</div>
       <p class="card-desc">Identify stakeholders, assess influence and interest, and plan targeted engagement strategies.</p>
-      <button class="card-btn" onclick="comingSoon('Stakeholder Analysis')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+      <button class="card-btn" onclick="openTool('stakeholder')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
     </div>
     <div class="tool-card" data-name="Risk Analysis">
       <div class="card-top"><div class="card-icon"><i class="fa-solid fa-triangle-exclamation"></i></div></div>
@@ -669,7 +669,7 @@ input.cell-input:focus{border-color:var(--accent);box-shadow:none}
       <div class="card-top"><div class="card-icon"><i class="fa-solid fa-tree"></i></div></div>
       <div class="card-title">Root Cause Analysis</div>
       <p class="card-desc">Structured 5-Why and systematic investigation to drill beneath symptoms to the true drivers of defects.</p>
-      <button class="card-btn" onclick="comingSoon('Root Cause Analysis')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+      <button class="card-btn" onclick="openTool('five-why')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
     </div>
     <div class="tool-card" data-name="Potential Causes Matrix">
       <div class="card-top"><div class="card-icon"><i class="fa-solid fa-table-cells"></i></div></div>
@@ -769,7 +769,7 @@ input.cell-input:focus{border-color:var(--accent);box-shadow:none}
       <div class="card-top"><div class="card-icon"><i class="fa-solid fa-bell"></i></div></div>
       <div class="card-title">Monitoring and Reaction Plan</div>
       <p class="card-desc">Define what to monitor, control limits, who reacts, and how — defending process gains in real time.</p>
-      <button class="card-btn" onclick="comingSoon('Monitoring and Reaction Plan')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+      <button class="card-btn" onclick="openTool('monitoring-plan')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
     </div>
     <div class="tool-card" data-name="Control Chart Dashboard">
       <div class="card-top"><div class="card-icon"><i class="fa-solid fa-display-chart-up"></i></div></div>
@@ -781,7 +781,7 @@ input.cell-input:focus{border-color:var(--accent);box-shadow:none}
       <div class="card-top"><div class="card-icon"><i class="fa-solid fa-coins"></i></div></div>
       <div class="card-title">Benefit Calculation Tool</div>
       <p class="card-desc">Track and calculate realised hard and soft financial benefits post-implementation to report ROI.</p>
-      <button class="card-btn" onclick="comingSoon('Benefit Calculation Tool')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+      <button class="card-btn" onclick="openTool('benefit-calc')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
     </div>
     <div class="tool-card" data-name="Benefit Approval Tracker">
       <div class="card-top"><div class="card-icon"><i class="fa-solid fa-stamp"></i></div></div>
@@ -811,7 +811,7 @@ input.cell-input:focus{border-color:var(--accent);box-shadow:none}
       <div class="card-top"><div class="card-icon"><i class="fa-solid fa-circle-dot"></i></div></div>
       <div class="card-title">Action Item Log</div>
       <p class="card-desc">Centralised tracker of open action items, owners, due dates, and status through project close.</p>
-      <button class="card-btn" onclick="comingSoon('Action Item Log')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+      <button class="card-btn" onclick="openTool('action-log')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
     </div>
   </div>
 </section>
@@ -865,12 +865,17 @@ input.cell-input:focus{border-color:var(--accent);box-shadow:none}
    TOOL REGISTRY
 ═══════════════════════════════════════════ */
 const TOOLS = {
-  'project-charter': { title:'Project Charter', phase:'define', color:'var(--define)' },
-  'sipoc':           { title:'SIPOC Diagram',   phase:'define', color:'var(--define)' },
-  'fishbone':        { title:'Fishbone Diagram', phase:'analyze', color:'var(--analyze)' },
-  'fmea':            { title:'FMEA — Failure Mode & Effects Analysis', phase:'analyze', color:'var(--analyze)' },
-  'effort-benefit':  { title:'Effort vs Benefit Matrix', phase:'improve', color:'var(--improve)' },
-  'control-chart':   { title:'Control Chart (I-MR)', phase:'measure', color:'var(--measure)' },
+  'project-charter':  { title:'Project Charter',                        color:'var(--define)'  },
+  'sipoc':            { title:'SIPOC Diagram',                          color:'var(--define)'  },
+  'stakeholder':      { title:'Stakeholder Analysis',                   color:'var(--define)'  },
+  'fishbone':         { title:'Fishbone (Ishikawa) Diagram',            color:'var(--analyze)' },
+  'fmea':             { title:'FMEA — Failure Mode & Effects Analysis', color:'var(--analyze)' },
+  'five-why':         { title:'Root Cause Analysis — 5 Why',            color:'var(--analyze)' },
+  'effort-benefit':   { title:'Effort vs Benefit Matrix',               color:'var(--improve)' },
+  'control-chart':    { title:'Control Chart (I-MR)',                   color:'var(--measure)' },
+  'monitoring-plan':  { title:'Monitoring & Reaction Plan',             color:'var(--control)' },
+  'benefit-calc':     { title:'Benefit Calculation Tool',               color:'var(--control)' },
+  'action-log':       { title:'Action Item Log',                        color:'var(--control)' },
 };
 
 let activeChart = null;
@@ -884,9 +889,14 @@ function openTool(id){
   document.getElementById('modalActions').innerHTML = renderActions(id);
   document.getElementById('modalOverlay').classList.add('open');
   document.body.style.overflow='hidden';
-  if(id==='control-chart') setTimeout(()=>initChart(),80);
-  if(id==='fishbone') initFishbone();
+  if(id==='control-chart')  setTimeout(()=>initChart(),80);
+  if(id==='fishbone')       initFishbone();
   if(id==='effort-benefit') renderMatrix();
+  if(id==='stakeholder')    setTimeout(drawStakeMap,100);
+  if(id==='five-why')       { /* no init needed */ }
+  if(id==='monitoring-plan'){ /* no init needed */ }
+  if(id==='benefit-calc')   calcBenefit();
+  if(id==='action-log')     calcActionSummary();
 }
 function closeModal(){
   document.getElementById('modalOverlay').classList.remove('open');
@@ -900,22 +910,32 @@ function comingSoon(n){ alert(`"${n}" template coming soon! Check back for the n
    RENDER TOOL BODIES
 ═══════════════════════════════════════════ */
 function renderTool(id){
-  if(id==='project-charter') return tmplProjectCharter();
-  if(id==='sipoc')           return tmplSIPOC();
-  if(id==='fishbone')        return tmplFishbone();
-  if(id==='fmea')            return tmplFMEA();
-  if(id==='effort-benefit')  return tmplEffortBenefit();
-  if(id==='control-chart')   return tmplControlChart();
+  if(id==='project-charter')  return tmplProjectCharter();
+  if(id==='sipoc')            return tmplSIPOC();
+  if(id==='stakeholder')      return tmplStakeholder();
+  if(id==='fishbone')         return tmplFishbone();
+  if(id==='fmea')             return tmplFMEA();
+  if(id==='five-why')         return tmplFiveWhy();
+  if(id==='effort-benefit')   return tmplEffortBenefit();
+  if(id==='control-chart')    return tmplControlChart();
+  if(id==='monitoring-plan')  return tmplMonitoringPlan();
+  if(id==='benefit-calc')     return tmplBenefitCalc();
+  if(id==='action-log')       return tmplActionLog();
   return '';
 }
 function renderActions(id){
   const base = `<button class="btn btn-secondary" onclick="closeModal()"><i class="fa-solid fa-xmark"></i> Close</button>`;
-  if(id==='project-charter') return `<button class="btn btn-primary" onclick="exportCharter()"><i class="fa-solid fa-file-arrow-down"></i> Export PDF</button><button class="btn btn-green" onclick="exportCharterCSV()"><i class="fa-solid fa-table"></i> Export CSV</button>${base}`;
-  if(id==='sipoc')           return `<button class="btn btn-green" onclick="exportSIPOC()"><i class="fa-solid fa-table"></i> Export CSV</button>${base}`;
-  if(id==='fishbone')        return `<button class="btn btn-primary" onclick="drawFishbone()"><i class="fa-solid fa-wand-magic-sparkles"></i> Generate Diagram</button><button class="btn btn-secondary" onclick="exportFishSVG()"><i class="fa-solid fa-image"></i> Export SVG</button>${base}`;
-  if(id==='fmea')            return `<button class="btn btn-primary" onclick="addFMEARow()"><i class="fa-solid fa-plus"></i> Add Row</button><button class="btn btn-green" onclick="exportFMEA()"><i class="fa-solid fa-table"></i> Export CSV</button>${base}`;
-  if(id==='effort-benefit')  return `<button class="btn btn-primary" onclick="addEBSolution()"><i class="fa-solid fa-plus"></i> Add Solution</button><button class="btn btn-secondary" onclick="renderMatrix()"><i class="fa-solid fa-rotate"></i> Refresh Matrix</button>${base}`;
-  if(id==='control-chart')   return `<button class="btn btn-primary" onclick="updateChart()"><i class="fa-solid fa-chart-line"></i> Plot Chart</button><button class="btn btn-green" onclick="exportChartCSV()"><i class="fa-solid fa-table"></i> Export CSV</button>${base}`;
+  if(id==='project-charter')  return `<button class="btn btn-primary" onclick="exportCharter()"><i class="fa-solid fa-file-arrow-down"></i> Export PDF</button><button class="btn btn-green" onclick="exportCharterCSV()"><i class="fa-solid fa-table"></i> Export CSV</button>${base}`;
+  if(id==='sipoc')            return `<button class="btn btn-green" onclick="exportSIPOC()"><i class="fa-solid fa-table"></i> Export CSV</button>${base}`;
+  if(id==='stakeholder')      return `<button class="btn btn-primary" onclick="addStakeholder()"><i class="fa-solid fa-plus"></i> Add Stakeholder</button><button class="btn btn-green" onclick="exportStakeholders()"><i class="fa-solid fa-table"></i> Export CSV</button>${base}`;
+  if(id==='fishbone')         return `<button class="btn btn-primary" onclick="drawFishbone()"><i class="fa-solid fa-wand-magic-sparkles"></i> Generate Diagram</button><button class="btn btn-secondary" onclick="exportFishSVG()"><i class="fa-solid fa-image"></i> Export SVG</button>${base}`;
+  if(id==='fmea')             return `<button class="btn btn-primary" onclick="addFMEARow()"><i class="fa-solid fa-plus"></i> Add Row</button><button class="btn btn-green" onclick="exportFMEA()"><i class="fa-solid fa-table"></i> Export CSV</button>${base}`;
+  if(id==='five-why')         return `<button class="btn btn-primary" onclick="analyseChain()"><i class="fa-solid fa-magnifying-glass"></i> Analyse Chain</button>${base}`;
+  if(id==='effort-benefit')   return `<button class="btn btn-primary" onclick="addEBSolution()"><i class="fa-solid fa-plus"></i> Add Solution</button><button class="btn btn-secondary" onclick="renderMatrix()"><i class="fa-solid fa-rotate"></i> Refresh Matrix</button>${base}`;
+  if(id==='control-chart')    return `<button class="btn btn-primary" onclick="updateChart()"><i class="fa-solid fa-chart-line"></i> Plot Chart</button><button class="btn btn-green" onclick="exportChartCSV()"><i class="fa-solid fa-table"></i> Export CSV</button>${base}`;
+  if(id==='monitoring-plan')  return `<button class="btn btn-primary" onclick="addMonRow()"><i class="fa-solid fa-plus"></i> Add KPI</button><button class="btn btn-green" onclick="exportMon()"><i class="fa-solid fa-table"></i> Export CSV</button>${base}`;
+  if(id==='benefit-calc')     return `<button class="btn btn-primary" onclick="addBenLine()"><i class="fa-solid fa-plus"></i> Add Benefit</button><button class="btn btn-green" onclick="exportBenCalc()"><i class="fa-solid fa-table"></i> Export CSV</button>${base}`;
+  if(id==='action-log')       return `<button class="btn btn-primary" onclick="addAction()"><i class="fa-solid fa-plus"></i> Add Action</button><button class="btn btn-green" onclick="exportActions()"><i class="fa-solid fa-table"></i> Export CSV</button>${base}`;
   return base;
 }
 
@@ -1243,6 +1263,343 @@ function downloadCSV(filename, rows){
   const csv=rows.map(r=>r.map(c=>`"${(c||'').toString().replace(/"/g,'""')}"`).join(',')).join('\n');
   const blob=new Blob([csv],{type:'text/csv'});
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=filename; a.click();
+}
+
+
+/* ═══════════════════════════════════════════════════════
+   NEW TOOL: STAKEHOLDER ANALYSIS
+═══════════════════════════════════════════════════════ */
+const _stakeColors = ['#4f8ef7','#2dd4a0','#a855f7','#f4722b','#ef4444','#f59e0b','#ec4899','#06b6d4'];
+let _stakes = [
+  {name:'Executive Sponsor', dept:'Leadership',  power:85, interest:55, strategy:'Keep Satisfied',  notes:'Monthly steering update'},
+  {name:'Process Owner',     dept:'Operations',  power:60, interest:90, strategy:'Manage Closely',  notes:'Core team member'},
+  {name:'End Users',         dept:'Front-line',  power:25, interest:80, strategy:'Keep Informed',   notes:'Change management focus'},
+  {name:'IT Team',           dept:'IT',          power:50, interest:35, strategy:'Monitor',         notes:'System access needed'},
+];
+function tmplStakeholder(){
+  const rows = _stakes.map((s,i) => stakeRow(s,i)).join('');
+  return `
+  <p style="font-size:.78rem;color:var(--text3);margin-bottom:12px">Score Power (0–100) and Interest (0–100). The Power/Interest grid updates live.</p>
+  <div class="tbl-wrap">
+    <table class="data-table">
+      <thead><tr><th>#</th><th>Name</th><th>Dept / Role</th><th>Power (0-100)</th><th>Interest (0-100)</th><th>Engagement Strategy</th><th>Notes</th></tr></thead>
+      <tbody id="stake-body">${rows}</tbody>
+    </table>
+  </div>
+  <div class="output-box" style="margin-top:16px">
+    <div style="font-size:.72rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Power / Interest Grid</div>
+    <div id="stake-map" style="position:relative;width:100%;height:260px;background:var(--surface);border:1px solid var(--border2);border-radius:10px;overflow:hidden">
+      <div style="position:absolute;top:50%;left:0;right:0;border-top:1px dashed var(--border2)"></div>
+      <div style="position:absolute;left:50%;top:0;bottom:0;border-left:1px dashed var(--border2)"></div>
+      <div style="position:absolute;top:6px;left:8px;font-size:.58rem;color:var(--text3);font-weight:700">HIGH POWER / LOW INTEREST<br/><span style="color:var(--yellow)">Keep Satisfied</span></div>
+      <div style="position:absolute;top:6px;right:8px;text-align:right;font-size:.58rem;color:var(--text3);font-weight:700">HIGH POWER / HIGH INTEREST<br/><span style="color:var(--green)">Manage Closely</span></div>
+      <div style="position:absolute;bottom:6px;left:8px;font-size:.58rem;color:var(--text3);font-weight:700">LOW POWER / LOW INTEREST<br/><span style="color:var(--text3)">Monitor</span></div>
+      <div style="position:absolute;bottom:6px;right:8px;text-align:right;font-size:.58rem;color:var(--text3);font-weight:700">LOW POWER / HIGH INTEREST<br/><span style="color:var(--accent2)">Keep Informed</span></div>
+    </div>
+  </div>`;
+}
+function stakeRow(s,i){
+  const strats = ['Manage Closely','Keep Satisfied','Keep Informed','Monitor'];
+  const sel = strats.map(st=>`<option ${s.strategy===st?'selected':''}>${st}</option>`).join('');
+  return `<tr>
+    <td style="color:var(--text3);font-size:.78rem">${i+1}</td>
+    <td><input class="cell-input" value="${s.name}" oninput="_stakes[${i}].name=this.value;drawStakeMap()"/></td>
+    <td><input class="cell-input" value="${s.dept}"/></td>
+    <td><input class="cell-input" type="number" min="0" max="100" value="${s.power}" style="width:60px" oninput="_stakes[${i}].power=+this.value;drawStakeMap()"/></td>
+    <td><input class="cell-input" type="number" min="0" max="100" value="${s.interest}" style="width:60px" oninput="_stakes[${i}].interest=+this.value;drawStakeMap()"/></td>
+    <td><select class="cell-input" style="background:var(--surface2);border:1px solid var(--border2);color:var(--text);border-radius:6px;padding:6px 8px;font-size:.82rem;font-family:'Inter',sans-serif" onchange="_stakes[${i}].strategy=this.value">${sel}</select></td>
+    <td><input class="cell-input" value="${s.notes}"/></td>
+  </tr>`;
+}
+function drawStakeMap(){
+  const map = document.getElementById('stake-map');
+  if(!map) return;
+  map.querySelectorAll('.s-dot').forEach(d => d.remove());
+  _stakes.forEach((s,i) => {
+    const dot = document.createElement('div');
+    dot.className = 's-dot';
+    dot.title = `${s.name}\nPower: ${s.power} | Interest: ${s.interest}\n${s.strategy}`;
+    dot.textContent = (s.name||'?').charAt(0).toUpperCase();
+    dot.style.cssText = `position:absolute;width:28px;height:28px;border-radius:50%;
+      background:${_stakeColors[i%_stakeColors.length]};
+      left:${s.interest}%;bottom:${s.power}%;
+      transform:translate(-50%,50%);
+      display:flex;align-items:center;justify-content:center;
+      font-size:.62rem;font-weight:800;color:#fff;cursor:default;
+      border:2px solid rgba(255,255,255,.25);z-index:2`;
+    map.appendChild(dot);
+  });
+}
+function addStakeholder(){
+  const i = _stakes.length;
+  _stakes.push({name:'New Stakeholder',dept:'',power:50,interest:50,strategy:'Monitor',notes:''});
+  document.getElementById('stake-body').insertAdjacentHTML('beforeend', stakeRow(_stakes[i],i));
+  drawStakeMap();
+}
+function exportStakeholders(){
+  const rows = [['Name','Dept','Power','Interest','Strategy','Notes'],
+    ..._stakes.map(s=>[s.name,s.dept,s.power,s.interest,s.strategy,s.notes])];
+  downloadCSV('stakeholder-analysis.csv', rows);
+}
+
+/* ═══════════════════════════════════════════════════════
+   NEW TOOL: ROOT CAUSE ANALYSIS — 5 WHY
+═══════════════════════════════════════════════════════ */
+function tmplFiveWhy(){
+  const prompts = [
+    'Why does this problem occur?',
+    'Why? (build on Why #1)',
+    'Why? (go deeper…)',
+    'Why? (approaching the root…)',
+    'Why? — this is typically the root cause'
+  ];
+  const whys = prompts.map((p,i) => `
+    <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:14px">
+      <div style="width:32px;height:32px;border-radius:50%;background:var(--surface2);border:1px solid var(--border2);
+           display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;
+           color:var(--accent2);flex-shrink:0;margin-top:22px">W${i+1}</div>
+      <div style="flex:1">
+        <label>Why #${i+1}${i===0?' — Start here':i===4?' — Root cause':''}</label>
+        <textarea id="wy-${i+1}" placeholder="${p}" style="min-height:56px"></textarea>
+      </div>
+    </div>`).join('');
+  return `
+  <div class="form-group">
+    <label>Problem Statement</label>
+    <input type="text" id="wy-prob" placeholder="Describe the specific, quantified problem…"/>
+  </div>
+  ${whys}
+  <div id="wy-result" style="margin-top:6px"></div>`;
+}
+function analyseChain(){
+  const prob = document.getElementById('wy-prob').value.trim();
+  const whys = [1,2,3,4,5].map(n => (document.getElementById('wy-'+n)||{}).value||'').filter(Boolean);
+  const res = document.getElementById('wy-result');
+  if(!prob || whys.length < 3){
+    res.innerHTML = `<div style="padding:12px;border:1px solid var(--yellow);border-radius:8px;color:var(--yellow);font-size:.82rem">
+      ⚠ Enter the problem statement and at least 3 Why responses.</div>`;
+    return;
+  }
+  const chain = whys.map((w,i) => `
+    <div style="display:flex;gap:10px;margin-bottom:6px">
+      <div style="color:var(--accent2);font-weight:800;font-size:.75rem;width:28px;flex-shrink:0;padding-top:2px">W${i+1}</div>
+      <div style="flex:1;font-size:.84rem;color:var(--text2);padding:6px 10px;background:var(--surface);border-radius:6px">${w}</div>
+    </div>
+    ${i<whys.length-1?'<div style="margin-left:14px;border-left:1px dashed var(--border2);height:6px"></div>':''}`).join('');
+  res.innerHTML = `<div class="output-box">
+    <div style="font-size:.72rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px">Root Cause Chain</div>
+    <div style="margin-bottom:10px;padding:8px 12px;background:rgba(239,68,68,.08);border-left:3px solid var(--red);border-radius:4px;font-size:.84rem">
+      <strong style="color:var(--text3)">Problem: </strong>${prob}</div>
+    ${chain}
+    <div style="margin-top:12px;padding:12px;background:rgba(45,212,160,.08);border:1px solid rgba(45,212,160,.3);border-radius:8px">
+      <div style="font-size:.7rem;font-weight:800;color:var(--green);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px">✓ Root Cause Identified</div>
+      <div style="font-size:.9rem;color:var(--white);font-weight:600">${whys[whys.length-1]}</div>
+    </div>
+  </div>`;
+}
+
+/* ═══════════════════════════════════════════════════════
+   NEW TOOL: MONITORING & REACTION PLAN
+═══════════════════════════════════════════════════════ */
+let _monRows = [
+  {kpi:'Invoice Error Rate', target:'≤ 2%',   ucl:'3%',    lcl:'0%', freq:'Weekly', owner:'Process Owner', method:'ERP automated report',       reaction:'1. Review top 3 error types\n2. Retrain if new staff involved\n3. Escalate if >5% for 2 consecutive weeks'},
+  {kpi:'Cycle Time (hrs)',   target:'≤ 4 hrs', ucl:'5.5 hrs',lcl:'0', freq:'Daily',  owner:'Team Lead',     method:'Ticketing system dashboard', reaction:'1. Check queue backlog\n2. Add resource if >6hrs for 3+ days\n3. Escalate if trend worsens'},
+];
+function tmplMonitoringPlan(){
+  const rows = _monRows.map((r,i) => monRow(r,i)).join('');
+  return `
+  <div class="form-row">
+    <div class="form-group"><label>Process Name</label><input type="text" id="mon-proc" placeholder="Process being controlled"/></div>
+    <div class="form-group"><label>Control Plan Owner</label><input type="text" id="mon-own" placeholder="Name / Role"/></div>
+  </div>
+  <div class="tbl-wrap">
+    <table class="data-table">
+      <thead><tr><th>#</th><th>KPI / Metric</th><th>Target</th><th>UCL</th><th>LCL</th><th>Frequency</th><th>Owner</th><th>Measurement Method</th><th>Reaction Plan</th></tr></thead>
+      <tbody id="mon-body">${rows}</tbody>
+    </table>
+  </div>`;
+}
+function monRow(r,i){
+  const freqOpts = ['Daily','Weekly','Monthly','Real-time'].map(f=>`<option ${r.freq===f?'selected':''}>${f}</option>`).join('');
+  return `<tr>
+    <td style="color:var(--text3);font-size:.78rem">${i+1}</td>
+    <td><input class="cell-input" value="${r.kpi}" style="min-width:120px"/></td>
+    <td><input class="cell-input" value="${r.target}" style="width:70px"/></td>
+    <td><input class="cell-input" value="${r.ucl}" style="width:65px"/></td>
+    <td><input class="cell-input" value="${r.lcl}" style="width:65px"/></td>
+    <td><select class="cell-input" style="background:var(--surface2);border:1px solid var(--border2);color:var(--text);border-radius:6px;padding:6px 8px;font-size:.8rem;font-family:'Inter',sans-serif">${freqOpts}</select></td>
+    <td><input class="cell-input" value="${r.owner}" style="min-width:100px"/></td>
+    <td><input class="cell-input" value="${r.method}" style="min-width:130px"/></td>
+    <td><textarea class="cell-input" style="min-height:60px;min-width:190px">${r.reaction}</textarea></td>
+  </tr>`;
+}
+function addMonRow(){
+  const i = _monRows.length;
+  _monRows.push({kpi:'New KPI',target:'',ucl:'',lcl:'',freq:'Weekly',owner:'',method:'',reaction:''});
+  document.getElementById('mon-body').insertAdjacentHTML('beforeend', monRow(_monRows[i],i));
+}
+function exportMon(){
+  const rows = [['#','KPI','Target','UCL','LCL','Frequency','Owner','Method','Reaction Plan']];
+  document.querySelectorAll('#mon-body tr').forEach((tr,idx) => {
+    rows.push([idx+1,...[...tr.querySelectorAll('input,select,textarea')].map(x=>x.value)]);
+  });
+  downloadCSV('monitoring-plan.csv', rows);
+}
+
+/* ═══════════════════════════════════════════════════════
+   NEW TOOL: BENEFIT CALCULATION TOOL
+═══════════════════════════════════════════════════════ */
+let _benLines = [
+  {cat:'Hard', desc:'Headcount reduction (0.5 FTE × £60k)', monthly:2500, months:12},
+  {cat:'Hard', desc:'Rework / scrap cost eliminated',       monthly:1200, months:12},
+  {cat:'Soft', desc:'Customer satisfaction uplift (CX value)', monthly:800, months:12},
+];
+function tmplBenefitCalc(){
+  const rows = _benLines.map((r,i) => benLineRow(r,i)).join('');
+  return `
+  <div class="form-row">
+    <div class="form-group"><label>Project</label><input type="text" id="bc-proj" placeholder="Project title"/></div>
+    <div class="form-group"><label>Currency Symbol</label>
+      <select id="bc-curr" onchange="calcBenefit()" style="width:100%;background:var(--surface);border:1px solid var(--border2);color:var(--text);font-family:'Inter',sans-serif;font-size:.88rem;padding:10px 14px;border-radius:8px;outline:none">
+        <option value="£">£ GBP</option><option value="$">$ USD</option><option value="€">€ EUR</option>
+      </select>
+    </div>
+  </div>
+  <div class="tbl-wrap">
+    <table class="data-table">
+      <thead><tr><th>#</th><th>Category</th><th>Benefit Description</th><th>Monthly Value</th><th>Months Active</th><th>Total Value</th></tr></thead>
+      <tbody id="bc-body">${rows}</tbody>
+    </table>
+  </div>
+  <div id="bc-totals" style="margin-top:14px"></div>`;
+}
+function benLineRow(r,i){
+  const curr = (document.getElementById('bc-curr')||{}).value || '£';
+  const tot = r.monthly * r.months;
+  const catOpts = ['Hard','Soft'].map(c=>`<option ${r.cat===c?'selected':''}>${c}</option>`).join('');
+  return `<tr>
+    <td style="color:var(--text3);font-size:.78rem">${i+1}</td>
+    <td><select class="cell-input" style="background:var(--surface2);border:1px solid var(--border2);color:var(--text);border-radius:6px;padding:6px 8px;font-size:.8rem;font-family:'Inter',sans-serif" onchange="_benLines[${i}].cat=this.value;calcBenefit()">${catOpts}</select></td>
+    <td><input class="cell-input" value="${r.desc}" style="min-width:180px" oninput="_benLines[${i}].desc=this.value"/></td>
+    <td><input class="cell-input" type="number" value="${r.monthly}" style="width:90px" oninput="_benLines[${i}].monthly=+this.value;calcBenefit();updateBenTot(${i})"/></td>
+    <td><input class="cell-input" type="number" value="${r.months}" min="1" max="60" style="width:60px" oninput="_benLines[${i}].months=+this.value;calcBenefit();updateBenTot(${i})"/></td>
+    <td id="bc-tot-${i}" style="font-weight:800;color:var(--green)">${curr}${tot.toLocaleString()}</td>
+  </tr>`;
+}
+function updateBenTot(i){
+  const curr = (document.getElementById('bc-curr')||{}).value || '£';
+  const el = document.getElementById('bc-tot-'+i);
+  if(el) el.textContent = curr + (_benLines[i].monthly * _benLines[i].months).toLocaleString();
+}
+function calcBenefit(){
+  const curr = (document.getElementById('bc-curr')||{}).value || '£';
+  _benLines.forEach((_,i) => updateBenTot(i));
+  const hard = _benLines.filter(r=>r.cat==='Hard').reduce((a,r)=>a+r.monthly*r.months,0);
+  const soft = _benLines.filter(r=>r.cat==='Soft').reduce((a,r)=>a+r.monthly*r.months,0);
+  const total = hard + soft;
+  const t = document.getElementById('bc-totals');
+  if(t) t.innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+      <div style="background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:16px;text-align:center">
+        <div style="font-size:1.4rem;font-weight:800;color:var(--green)">${curr}${hard.toLocaleString()}</div>
+        <div style="font-size:.7rem;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-top:4px">Hard Benefits</div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:16px;text-align:center">
+        <div style="font-size:1.4rem;font-weight:800;color:var(--yellow)">${curr}${soft.toLocaleString()}</div>
+        <div style="font-size:.7rem;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-top:4px">Soft Benefits</div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--accent);border-radius:10px;padding:16px;text-align:center">
+        <div style="font-size:1.4rem;font-weight:800;color:var(--white)">${curr}${total.toLocaleString()}</div>
+        <div style="font-size:.7rem;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-top:4px">Total Benefits</div>
+      </div>
+    </div>`;
+}
+function addBenLine(){
+  const i = _benLines.length;
+  _benLines.push({cat:'Hard',desc:'',monthly:0,months:12});
+  document.getElementById('bc-body').insertAdjacentHTML('beforeend', benLineRow(_benLines[i],i));
+}
+function exportBenCalc(){
+  const rows = [['#','Category','Description','Monthly Value','Months','Total']];
+  document.querySelectorAll('#bc-body tr').forEach((tr,idx) => {
+    rows.push([idx+1,...[...tr.querySelectorAll('input,select')].map(x=>x.value)]);
+  });
+  downloadCSV('benefit-calculation.csv', rows);
+}
+
+/* ═══════════════════════════════════════════════════════
+   NEW TOOL: ACTION ITEM LOG
+═══════════════════════════════════════════════════════ */
+let _actionItems = [
+  {action:'Complete updated training materials', owner:'HR Manager',    due:'2025-03-15', priority:'High',     status:'In Progress', phase:'Improve', notes:''},
+  {action:'Publish SOP v2.0',                   owner:'Process Owner', due:'2025-03-10', priority:'Critical', status:'Complete',    phase:'Improve', notes:'Published 08/03'},
+  {action:'Schedule post-pilot review meeting',  owner:'Project Lead',  due:'2025-04-05', priority:'Medium',   status:'Not Started', phase:'Control', notes:''},
+];
+function tmplActionLog(){
+  const rows = _actionItems.map((a,i) => actionRow(a,i)).join('');
+  return `
+  <div class="form-row">
+    <div class="form-group"><label>Project</label><input type="text" id="al-proj" placeholder="Project name"/></div>
+    <div class="form-group"><label>Log Owner</label><input type="text" id="al-own" placeholder="Name"/></div>
+  </div>
+  <div class="tbl-wrap">
+    <table class="data-table">
+      <thead><tr><th>#</th><th>Action</th><th>Owner</th><th>Due Date</th><th>Priority</th><th>Phase</th><th>Status</th><th>Notes</th></tr></thead>
+      <tbody id="al-body">${rows}</tbody>
+    </table>
+  </div>
+  <div id="al-summary" style="margin-top:12px"></div>`;
+}
+function actionRow(a,i){
+  const overdue = a.due && new Date(a.due) < new Date() && a.status !== 'Complete';
+  const prioOpts  = ['Critical','High','Medium','Low'].map(p=>`<option ${a.priority===p?'selected':''}>${p}</option>`).join('');
+  const phaseOpts = ['Define','Measure','Analyze','Improve','Control'].map(p=>`<option ${a.phase===p?'selected':''}>${p}</option>`).join('');
+  const statOpts  = ['Not Started','In Progress','Complete','Blocked'].map(s=>`<option ${a.status===s?'selected':''}>${s}</option>`).join('');
+  return `<tr style="opacity:${a.status==='Complete'?.55:1}">
+    <td style="color:var(--text3);font-size:.78rem">${i+1}</td>
+    <td><input class="cell-input" value="${a.action}" style="min-width:180px" oninput="_actionItems[${i}].action=this.value"/></td>
+    <td><input class="cell-input" value="${a.owner}" style="min-width:100px" oninput="_actionItems[${i}].owner=this.value"/></td>
+    <td><input type="date" class="cell-input" value="${a.due}" style="width:125px;${overdue?'color:var(--red)':''}" oninput="_actionItems[${i}].due=this.value;calcActionSummary()"/></td>
+    <td><select class="cell-input" style="background:var(--surface2);border:1px solid var(--border2);color:var(--text);border-radius:6px;padding:6px 8px;font-size:.8rem;font-family:'Inter',sans-serif" onchange="_actionItems[${i}].priority=this.value">${prioOpts}</select></td>
+    <td><select class="cell-input" style="background:var(--surface2);border:1px solid var(--border2);color:var(--text);border-radius:6px;padding:6px 8px;font-size:.8rem;font-family:'Inter',sans-serif" onchange="_actionItems[${i}].phase=this.value">${phaseOpts}</select></td>
+    <td><select class="cell-input" style="background:var(--surface2);border:1px solid var(--border2);color:var(--text);border-radius:6px;padding:6px 8px;font-size:.8rem;font-family:'Inter',sans-serif" onchange="_actionItems[${i}].status=this.value;this.closest('tr').style.opacity=this.value==='Complete'?.55:1;calcActionSummary()">${statOpts}</select></td>
+    <td><input class="cell-input" value="${a.notes}" style="min-width:120px" oninput="_actionItems[${i}].notes=this.value"/></td>
+  </tr>`;
+}
+function addAction(){
+  const i = _actionItems.length;
+  _actionItems.push({action:'',owner:'',due:'',priority:'Medium',status:'Not Started',phase:'Control',notes:''});
+  document.getElementById('al-body').insertAdjacentHTML('beforeend', actionRow(_actionItems[i],i));
+  calcActionSummary();
+}
+function calcActionSummary(){
+  const s = document.getElementById('al-summary');
+  if(!s) return;
+  const open    = _actionItems.filter(a=>a.status!=='Complete').length;
+  const overdue = _actionItems.filter(a=>a.due && new Date(a.due)<new Date() && a.status!=='Complete').length;
+  const done    = _actionItems.filter(a=>a.status==='Complete').length;
+  s.innerHTML = `
+    <div style="display:flex;gap:16px;flex-wrap:wrap">
+      <div style="background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:14px 22px;text-align:center">
+        <div style="font-size:1.6rem;font-weight:800;color:var(--yellow)">${open}</div>
+        <div style="font-size:.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-top:3px">Open</div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:14px 22px;text-align:center">
+        <div style="font-size:1.6rem;font-weight:800;color:${overdue?'var(--red)':'var(--green)'}">${overdue}</div>
+        <div style="font-size:.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-top:3px">Overdue</div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:14px 22px;text-align:center">
+        <div style="font-size:1.6rem;font-weight:800;color:var(--green)">${done}</div>
+        <div style="font-size:.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-top:3px">Complete</div>
+      </div>
+    </div>`;
+}
+function exportActions(){
+  const rows = [['#','Action','Owner','Due','Priority','Phase','Status','Notes']];
+  document.querySelectorAll('#al-body tr').forEach((tr,idx) => {
+    rows.push([idx+1,...[...tr.querySelectorAll('input,select')].map(x=>x.value)]);
+  });
+  downloadCSV('action-log.csv', rows);
 }
 
 /* ═══════════════════════════════════════════
