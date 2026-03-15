@@ -87,11 +87,12 @@ nav.scrolled .nav-cta { background: var(--orange); }
   letter-spacing: -0.02em;
 }
 .nav-logo span { color: var(--orange); }
-/* Nuke browser default link styling for every anchor inside the nav */
-nav a,
-nav a:visited,
-nav a:link {
-  text-decoration: none !important;
+.nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
+.nav-link {
+  text-decoration: none; color: var(--navy);
+  font-weight: 500; font-size: 0.9rem;
+  letter-spacing: 0.02em; position: relative;
+  transition: color 0.2s;
 }
 .nav-link::after {
   content: ''; position: absolute; bottom: -3px; left: 0; right: 0;
@@ -741,8 +742,6 @@ footer { background: #080f18; padding: 4rem 2rem 2rem; }
   <a href="#home" onclick="toggleMenu()">Home</a>
   <a href="#solver" onclick="toggleMenu()">Problem Solver</a>
   <a href="#tools" onclick="toggleMenu()">Tools</a>
-  <a href="#tools" onclick="toggleMenu()">Six Sigma Toolkit</a>
-  <a href="#cases" onclick="toggleMenu()">Dashboards</a>
   <a href="#cases" onclick="toggleMenu()">Case Studies</a>
   <a href="#blog" onclick="toggleMenu()">Blog</a>
   <a href="#about" onclick="toggleMenu()">About</a>
