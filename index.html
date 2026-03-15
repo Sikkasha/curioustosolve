@@ -728,6 +728,352 @@ footer { background: #080f18; padding: 4rem 2rem 2rem; }
 .tool-tab.active { color: var(--navy); border-bottom-color: var(--orange); }
 .tool-tab-content { display: none; }
 .tool-tab-content.active { display: block; }
+.navbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  background: rgba(10, 10, 20, 0.92);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  transition: background 0.3s;
+}
+.navbar.scrolled {
+  background: rgba(6, 6, 14, 0.97);
+}
+
+.nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ── Logo ── */
+.nav-logo {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #f0f4ff;
+  text-decoration: none;
+  letter-spacing: -0.3px;
+  flex-shrink: 0;
+}
+.nav-logo:hover { color: #00d4ff; }
+
+/* ── Desktop links list ── */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 0.1rem;
+  list-style: none;
+  margin: 0; padding: 0;
+}
+
+/* ALL nav links — base reset (fixes underline) */
+.nav-links a,
+.nav-links a:visited,
+.nav-links a:hover,
+.nav-links a:active {
+  text-decoration: none !important;
+}
+
+.nav-links > li > a {
+  display: inline-block;
+  padding: 0.42rem 0.85rem;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.86rem;
+  font-weight: 500;
+  border-radius: 6px;
+  transition: color 0.18s, background 0.18s;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.nav-links > li > a:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+/* CTA subscribe button */
+.nav-cta {
+  background: linear-gradient(135deg, #00d4ff, #0099cc) !important;
+  color: #000 !important;
+  font-weight: 700 !important;
+  padding: 0.42rem 1.1rem !important;
+  border-radius: 50px !important;
+  margin-left: 0.3rem;
+  box-shadow: 0 0 16px rgba(0, 212, 255, 0.3);
+  transition: transform 0.18s, box-shadow 0.18s !important;
+}
+.nav-cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 24px rgba(0, 212, 255, 0.45) !important;
+  background: linear-gradient(135deg, #00d4ff, #0099cc) !important;
+}
+
+/* ── Dropdown ── */
+.nav-dropdown {
+  position: relative;
+}
+
+.nav-dropdown-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.42rem 0.85rem;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.86rem;
+  font-weight: 500;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: color 0.18s, background 0.18s;
+  white-space: nowrap;
+  font-family: inherit;
+}
+.nav-dropdown-toggle:hover,
+.nav-dropdown:hover .nav-dropdown-toggle {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.nav-caret {
+  font-size: 0.65rem;
+  transition: transform 0.2s;
+  display: inline-block;
+}
+.nav-dropdown:hover .nav-caret,
+.nav-dropdown.open .nav-caret {
+  transform: rotate(180deg);
+}
+
+/* Dropdown menu panel */
+.nav-dropdown-menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 260px;
+  background: #111827;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  padding: 0.5rem;
+  list-style: none;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255,255,255,0.04) inset;
+  z-index: 200;
+  animation: ddFadeIn 0.18s ease;
+}
+@keyframes ddFadeIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(-6px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* Show on hover (desktop) */
+.nav-dropdown:hover .nav-dropdown-menu,
+.nav-dropdown.open   .nav-dropdown-menu {
+  display: block;
+}
+
+/* Dropdown items */
+.nav-dropdown-menu li a {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 10px;
+  color: rgba(255, 255, 255, 0.75);
+  text-decoration: none !important;
+  transition: background 0.15s, color 0.15s;
+}
+.nav-dropdown-menu li a:hover {
+  background: rgba(0, 212, 255, 0.09);
+  color: #fff;
+}
+.nav-dropdown-menu li a strong {
+  display: block;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: #f0f4ff;
+  line-height: 1.2;
+}
+.nav-dropdown-menu li a small {
+  display: block;
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.42);
+  margin-top: 0.1rem;
+  line-height: 1.3;
+}
+.dd-icon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.dd-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.07);
+  margin: 0.35rem 0.5rem;
+}
+.dd-coming {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: 10px;
+  opacity: 0.45;
+  pointer-events: none;
+  cursor: default;
+}
+.dd-coming strong { font-size: 0.82rem; color: #f0f4ff; display: block; }
+.dd-coming small  { font-size: 0.7rem; color: rgba(255,255,255,.4); display: block; margin-top: 0.1rem; }
+
+/* ── Hamburger button ── */
+.nav-hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 28px;
+  height: 20px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 1010;
+}
+.nav-hamburger span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 2px;
+  transition: all 0.28s ease;
+  transform-origin: center;
+}
+/* Animated X state */
+.nav-hamburger.active span:nth-child(1) { transform: translateY(9px) rotate(45deg); }
+.nav-hamburger.active span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.nav-hamburger.active span:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
+
+/* ── Mobile overlay ── */
+.nav-mobile-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  z-index: 1020;
+  backdrop-filter: blur(3px);
+  animation: overlayIn 0.2s ease;
+}
+@keyframes overlayIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* ── Mobile drawer ── */
+.nav-mobile-drawer {
+  position: fixed;
+  top: 0; right: 0;
+  width: min(320px, 88vw);
+  height: 100dvh;
+  background: #0d1220;
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  z-index: 1030;
+  transform: translateX(110%);
+  transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.nav-mobile-drawer.open {
+  transform: translateX(0);
+}
+
+.drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.1rem 1.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+.drawer-close {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.7);
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+.drawer-close:hover { background: rgba(255,255,255,0.12); color: #fff; }
+
+.drawer-links {
+  list-style: none;
+  padding: 0.75rem 0.75rem 2rem;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+.drawer-link {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.72rem 0.9rem;
+  border-radius: 10px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.92rem;
+  font-weight: 500;
+  text-decoration: none !important;
+  transition: background 0.15s, color 0.15s;
+}
+.drawer-link:hover { background: rgba(255,255,255,0.07); color: #fff; }
+
+.drawer-product {
+  padding-left: 1.2rem;
+  font-size: 0.88rem;
+  color: rgba(255,255,255,0.6);
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(255,255,255,0.05);
+  margin-bottom: 0.05rem;
+}
+.drawer-product:hover { background: rgba(0,212,255,0.08); color: #fff; border-color: rgba(0,212,255,0.2); }
+
+.drawer-section-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+  padding: 0.9rem 0.9rem 0.3rem;
+}
+.drawer-divider {
+  height: 1px;
+  background: rgba(255,255,255,0.06);
+  margin: 0.5rem 0.5rem;
+}
+.drawer-cta {
+  margin-top: 0.35rem;
+  background: linear-gradient(135deg, #00d4ff, #0099cc) !important;
+  color: #000 !important;
+  font-weight: 700 !important;
+  justify-content: center;
+  border-radius: 50px !important;
+}
+.drawer-cta:hover { opacity: 0.9; }
+
+/* ── Responsive breakpoints ── */
+@media (max-width: 900px) {
+  /* Hide all desktop links; show hamburger */
+  .nav-links { display: none; }
+  .nav-hamburger { display: flex; }
+}
+@media (min-width: 901px) {
+  /* On desktop ensure drawer is never shown */
+  .nav-mobile-drawer,
+  .nav-mobile-overlay { display: none !important; }
+}
 </style>
 </head>
 <body>
@@ -748,22 +1094,121 @@ footer { background: #080f18; padding: 4rem 2rem 2rem; }
 </div>
 
 <!-- Navigation -->
-<nav id="navbar">
-  <div class="nav-inner">
-    <a href="#home" class="nav-logo">Curious<span>To</span>Solve</a>
-    <ul class="nav-links">
-      <li><a href="#solver" class="nav-link">Problem Solver</a></li>
-      <li><a href="#tools" class="nav-link">Tools</a></li>
-      <li><a href="sixsigmatools.html">Six Sigma Toolkit</a>
-      <li><a href="dashboards.html">Dashboards</a></li>
-      <li><a href="#cases" class="nav-link">Case Studies</a></li>
-      <li><a href="#blog" class="nav-link">Blog</a></li>
-      <li><a href="#about" class="nav-link">About</a></li>
+<nav class="navbar" id="navbar">
+  <div class="nav-container">
+
+    <!-- Logo -->
+    <a href="#home" class="nav-logo">CuriousToSolve</a>
+
+    <!-- Desktop nav links -->
+    <ul class="nav-links" id="nav-links">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#solver">Problem Solver</a></li>
+      <li><a href="#tools">Tools</a></li>
+
+      <!-- ★ Products dropdown ★ -->
+      <li class="nav-dropdown">
+        <button class="nav-dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+          Products <span class="nav-caret">▾</span>
+        </button>
+        <ul class="nav-dropdown-menu" role="menu">
+          <li role="menuitem">
+            <a href="sixsigmatools.html">
+              <span class="dd-icon">⚙️</span>
+              <span>
+                <strong>Six Sigma Toolkit</strong>
+                <small>DMAIC, Control Charts, Cp/Cpk</small>
+              </span>
+            </a>
+          </li>
+          <li role="menuitem">
+            <a href="dashboards.html">
+              <span class="dd-icon">📊</span>
+              <span>
+                <strong>Dashboards</strong>
+                <small>Upload data, instant analytics</small>
+              </span>
+            </a>
+          </li>
+          <li role="menuitem">
+            <a href="brainstorm.html">
+              <span class="dd-icon">💡</span>
+              <span>
+                <strong>AI Brainstorming</strong>
+                <small>Structured ideation tool</small>
+              </span>
+            </a>
+          </li>
+          <!-- Future items — uncomment when ready:
+          <li role="menuitem">
+            <a href="lean.html">
+              <span class="dd-icon">🔄</span>
+              <span><strong>Lean Tools</strong><small>VSM, 5S, Kaizen</small></span>
+            </a>
+          </li>
+          <li role="menuitem">
+            <a href="kaizen.html">
+              <span class="dd-icon">📈</span>
+              <span><strong>Kaizen Board</strong><small>Continuous improvement tracker</small></span>
+            </a>
+          </li>
+          -->
+          <li class="dd-divider"></li>
+          <li role="menuitem" class="dd-coming">
+            <span class="dd-icon">🚀</span>
+            <span><strong>More coming soon…</strong><small>Lean, Kaizen &amp; more</small></span>
+          </li>
+        </ul>
+      </li>
+
+      <li><a href="#cases">Case Studies</a></li>
+      <li><a href="#blog">Blog</a></li>
+      <li><a href="#about">About</a></li>
       <li><a href="#subscribe" class="nav-cta">Subscribe</a></li>
     </ul>
-    <button class="hamburger" onclick="toggleMenu()" aria-label="Menu">
+
+    <!-- Hamburger -->
+    <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
+  </div>
+
+  <!-- Mobile drawer -->
+  <div class="nav-mobile-overlay" id="nav-overlay"></div>
+  <div class="nav-mobile-drawer" id="nav-drawer">
+    <div class="drawer-header">
+      <span class="nav-logo">CuriousToSolve</span>
+      <button class="drawer-close" id="drawer-close" aria-label="Close menu">✕</button>
+    </div>
+    <ul class="drawer-links">
+      <li><a href="#home"    class="drawer-link" data-close>Home</a></li>
+      <li><a href="#solver"  class="drawer-link" data-close>Problem Solver</a></li>
+      <li><a href="#tools"   class="drawer-link" data-close>Tools</a></li>
+
+      <!-- Mobile Products section -->
+      <li class="drawer-section-label">Products</li>
+      <li>
+        <a href="sixsigmatools.html" class="drawer-link drawer-product">
+          <span class="dd-icon">⚙️</span> Six Sigma Toolkit
+        </a>
+      </li>
+      <li>
+        <a href="dashboards.html" class="drawer-link drawer-product">
+          <span class="dd-icon">📊</span> Dashboards
+        </a>
+      </li>
+      <li>
+        <a href="brainstorm.html" class="drawer-link drawer-product">
+          <span class="dd-icon">💡</span> AI Brainstorming
+        </a>
+      </li>
+
+      <li class="drawer-divider"></li>
+      <li><a href="#cases"     class="drawer-link" data-close>Case Studies</a></li>
+      <li><a href="#blog"      class="drawer-link" data-close>Blog</a></li>
+      <li><a href="#about"     class="drawer-link" data-close>About</a></li>
+      <li><a href="#subscribe" class="drawer-link drawer-cta" data-close>Subscribe</a></li>
+    </ul>
   </div>
 </nav>
 
@@ -1705,6 +2150,104 @@ function handleSubscribe() {
   input.disabled = true;
 }
 </script>
+(function () {
+  'use strict';
+
+  /* ── Elements ── */
+  const navbar    = document.getElementById('navbar');
+  const hamburger = document.getElementById('nav-hamburger');
+  const drawer    = document.getElementById('nav-drawer');
+  const overlay   = document.getElementById('nav-overlay');
+  const closeBtn  = document.getElementById('drawer-close');
+
+  /* ── Scroll: add .scrolled class ── */
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 20);
+  }, { passive: true });
+
+  /* ── Mobile drawer open / close ── */
+  function openDrawer() {
+    drawer.classList.add('open');
+    overlay.style.display = 'block';
+    hamburger.classList.add('active');
+    hamburger.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeDrawer() {
+    drawer.classList.remove('open');
+    overlay.style.display = 'none';
+    hamburger.classList.remove('active');
+    hamburger.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  }
+
+  hamburger.addEventListener('click', () => {
+    drawer.classList.contains('open') ? closeDrawer() : openDrawer();
+  });
+  overlay.addEventListener('click', closeDrawer);
+  closeBtn.addEventListener('click',  closeDrawer);
+
+  /* Close drawer when any anchor link inside is tapped */
+  drawer.querySelectorAll('[data-close]').forEach(link => {
+    link.addEventListener('click', closeDrawer);
+  });
+
+  /* ── Dropdown: keyboard + click toggle for accessibility ── */
+  document.querySelectorAll('.nav-dropdown').forEach(dd => {
+    const toggle = dd.querySelector('.nav-dropdown-toggle');
+
+    /* Toggle on click (works for touch + keyboard users) */
+    toggle.addEventListener('click', (e) => {
+      const isOpen = dd.classList.contains('open');
+      /* Close all other dropdowns first */
+      document.querySelectorAll('.nav-dropdown.open').forEach(other => {
+        if (other !== dd) {
+          other.classList.remove('open');
+          other.querySelector('.nav-dropdown-toggle').setAttribute('aria-expanded', 'false');
+        }
+      });
+      dd.classList.toggle('open', !isOpen);
+      toggle.setAttribute('aria-expanded', String(!isOpen));
+    });
+
+    /* Close on Escape key */
+    dd.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        dd.classList.remove('open');
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.focus();
+      }
+    });
+  });
+
+  /* Close dropdowns when clicking outside */
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.nav-dropdown')) {
+      document.querySelectorAll('.nav-dropdown.open').forEach(dd => {
+        dd.classList.remove('open');
+        dd.querySelector('.nav-dropdown-toggle').setAttribute('aria-expanded', 'false');
+      });
+    }
+  });
+
+  /* ── Active link highlight based on scroll position ── */
+  const sections = document.querySelectorAll('section[id]');
+  const navAnchors = document.querySelectorAll('.nav-links a[href^="#"]');
+
+  const observerOptions = { rootMargin: '-40% 0px -50% 0px' };
+  const sectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        navAnchors.forEach(a => {
+          a.classList.toggle('active', a.getAttribute('href') === `#${id}`);
+        });
+      }
+    });
+  }, observerOptions);
+
+  sections.forEach(s => sectionObserver.observe(s));
+})();
 </body>
 
 </html>
