@@ -282,6 +282,7 @@ main{max-width:1340px;margin:0 auto;padding:0 1.5rem 100px}
 .btn-secondary{background:var(--surface2);color:var(--text2);border:1px solid var(--border2)}
 .btn-green{background:var(--green);color:var(--bg)}
 .btn-orange{background:var(--orange);color:var(--white)}
+.ci-sel{background:var(--surface2);border:1px solid var(--border2);color:var(--text);border-radius:6px;padding:6px 8px;font-size:.8rem;font-family:'Inter',sans-serif;}
 
 /* ── FORM ELEMENTS ── */
 .form-group{margin-bottom:16px}
@@ -466,7 +467,7 @@ input.cell-input:focus{border-color:var(--accent);box-shadow:none}
 
 <!-- ══ NAV ══ -->
 <nav class="site-nav">
-  <a href="index.html" class="nav-brand">Curious<span>To</span>Solve</em></a>
+  <a href="index.html" class="nav-brand">CuriousTo<em>Solve</em></a>
   <div class="nav-links">
     <a href="index.html#solver">Problem Solver</a>
     <a href="index.html#tools">Tools</a>
@@ -492,7 +493,7 @@ input.cell-input:focus{border-color:var(--accent);box-shadow:none}
   <div class="hero-stats">
     <div class="stat"><div class="stat-num">42</div><div class="stat-label">Tools</div></div>
     <div class="stat"><div class="stat-num">5</div><div class="stat-label">DMAIC Phases</div></div>
-    <div class="stat"><div class="stat-num">6</div><div class="stat-label">Interactive</div></div>
+    <div class="stat"><div class="stat-num">17</div><div class="stat-label">Interactive</div></div>
     <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Browser-Based</div></div>
   </div>
 </section>
@@ -536,34 +537,34 @@ input.cell-input:focus{border-color:var(--accent);box-shadow:none}
       <button class="card-btn" onclick="openTool('stakeholder')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
     </div>
     <div class="tool-card" data-name="Risk Analysis">
-      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-triangle-exclamation"></i></div></div>
+      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-triangle-exclamation"></i></div><span class="card-interactive-badge">Interactive</span></div>
       <div class="card-title">Risk Analysis</div>
       <p class="card-desc">Identify project risks, evaluate likelihood and impact, and define mitigation actions proactively.</p>
-      <button class="card-btn" onclick="comingSoon('Risk Analysis')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+      <button class="card-btn" onclick="openTool('risk-analysis')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
     </div>
     <div class="tool-card" data-name="Project Review">
-      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-clipboard-check"></i></div></div>
+      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-clipboard-check"></i></div><span class="card-interactive-badge">Interactive</span></div>
       <div class="card-title">Project Review</div>
       <p class="card-desc">Gate review framework to assess project health and readiness to advance to the next DMAIC phase.</p>
-      <button class="card-btn" onclick="comingSoon('Project Review')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+      <button class="card-btn" onclick="openTool('project-review')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
     </div>
     <div class="tool-card" data-name="Define Checklist">
-      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-list-check"></i></div></div>
+      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-list-check"></i></div><span class="card-interactive-badge">Interactive</span></div>
       <div class="card-title">Define Checklist</div>
       <p class="card-desc">Phase-exit checklist confirming all Define deliverables are complete before advancing to Measure.</p>
-      <button class="card-btn" onclick="comingSoon('Define Checklist')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+      <button class="card-btn" onclick="openTool('define-checklist')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
     </div>
     <div class="tool-card" data-name="Operational Definition">
-      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-book-open"></i></div></div>
+      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-book-open"></i></div><span class="card-interactive-badge">Interactive</span></div>
       <div class="card-title">Operational Definition</div>
       <p class="card-desc">Define key metrics and terms with precision so everyone measures data consistently across the project.</p>
-      <button class="card-btn" onclick="comingSoon('Operational Definition')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+      <button class="card-btn" onclick="openTool('op-definition')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
     </div>
     <div class="tool-card" data-name="Communication Plan">
-      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-envelopes-bulk"></i></div></div>
+      <div class="card-top"><div class="card-icon"><i class="fa-solid fa-envelopes-bulk"></i></div><span class="card-interactive-badge">Interactive</span></div>
       <div class="card-title">Communication Plan</div>
       <p class="card-desc">Outline who needs what information, in what format, and how frequently throughout the project lifecycle.</p>
-      <button class="card-btn" onclick="comingSoon('Communication Plan')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
+      <button class="card-btn" onclick="openTool('comm-plan')">Open Tool <i class="fa-solid fa-arrow-right"></i></button>
     </div>
   </div>
 </section>
@@ -868,6 +869,11 @@ const TOOLS = {
   'project-charter':  { title:'Project Charter',                        color:'var(--define)'  },
   'sipoc':            { title:'SIPOC Diagram',                          color:'var(--define)'  },
   'stakeholder':      { title:'Stakeholder Analysis',                   color:'var(--define)'  },
+  'risk-analysis':    { title:'Risk Analysis Matrix',                   color:'var(--define)'  },
+  'project-review':   { title:'Project Review (Gate Check)',            color:'var(--define)'  },
+  'define-checklist': { title:'Define Phase Checklist',                 color:'var(--define)'  },
+  'op-definition':    { title:'Operational Definition Builder',         color:'var(--define)'  },
+  'comm-plan':        { title:'Communication Plan',                     color:'var(--define)'  },
   'fishbone':         { title:'Fishbone (Ishikawa) Diagram',            color:'var(--analyze)' },
   'fmea':             { title:'FMEA — Failure Mode & Effects Analysis', color:'var(--analyze)' },
   'five-why':         { title:'Root Cause Analysis — 5 Why',            color:'var(--analyze)' },
@@ -889,14 +895,14 @@ function openTool(id){
   document.getElementById('modalActions').innerHTML = renderActions(id);
   document.getElementById('modalOverlay').classList.add('open');
   document.body.style.overflow='hidden';
-  if(id==='control-chart')  setTimeout(()=>initChart(),80);
-  if(id==='fishbone')       initFishbone();
-  if(id==='effort-benefit') renderMatrix();
-  if(id==='stakeholder')    setTimeout(drawStakeMap,100);
-  if(id==='five-why')       { /* no init needed */ }
-  if(id==='monitoring-plan'){ /* no init needed */ }
-  if(id==='benefit-calc')   calcBenefit();
-  if(id==='action-log')     calcActionSummary();
+  if(id==='control-chart')    setTimeout(()=>initChart(),80);
+  if(id==='fishbone')         initFishbone();
+  if(id==='effort-benefit')   renderMatrix();
+  if(id==='stakeholder')      setTimeout(drawStakeMap,100);
+  if(id==='risk-analysis')    setTimeout(renderRiskHeatmap,80);
+  if(id==='define-checklist') setTimeout(updateChecklistScore,50);
+  if(id==='benefit-calc')     calcBenefit();
+  if(id==='action-log')       calcActionSummary();
 }
 function closeModal(){
   document.getElementById('modalOverlay').classList.remove('open');
@@ -913,6 +919,11 @@ function renderTool(id){
   if(id==='project-charter')  return tmplProjectCharter();
   if(id==='sipoc')            return tmplSIPOC();
   if(id==='stakeholder')      return tmplStakeholder();
+  if(id==='risk-analysis')    return tmplRiskAnalysis();
+  if(id==='project-review')   return tmplProjectReview();
+  if(id==='define-checklist') return tmplDefineChecklist();
+  if(id==='op-definition')    return tmplOpDefinition();
+  if(id==='comm-plan')        return tmplCommPlan();
   if(id==='fishbone')         return tmplFishbone();
   if(id==='fmea')             return tmplFMEA();
   if(id==='five-why')         return tmplFiveWhy();
@@ -924,19 +935,27 @@ function renderTool(id){
   return '';
 }
 function renderActions(id){
-  const base = `<button class="btn btn-secondary" onclick="closeModal()"><i class="fa-solid fa-xmark"></i> Close</button>`;
-  if(id==='project-charter')  return `<button class="btn btn-primary" onclick="exportCharter()"><i class="fa-solid fa-file-arrow-down"></i> Export PDF</button><button class="btn btn-green" onclick="exportCharterCSV()"><i class="fa-solid fa-table"></i> Export CSV</button>${base}`;
-  if(id==='sipoc')            return `<button class="btn btn-green" onclick="exportSIPOC()"><i class="fa-solid fa-table"></i> Export CSV</button>${base}`;
-  if(id==='stakeholder')      return `<button class="btn btn-primary" onclick="addStakeholder()"><i class="fa-solid fa-plus"></i> Add Stakeholder</button><button class="btn btn-green" onclick="exportStakeholders()"><i class="fa-solid fa-table"></i> Export CSV</button>${base}`;
-  if(id==='fishbone')         return `<button class="btn btn-primary" onclick="drawFishbone()"><i class="fa-solid fa-wand-magic-sparkles"></i> Generate Diagram</button><button class="btn btn-secondary" onclick="exportFishSVG()"><i class="fa-solid fa-image"></i> Export SVG</button>${base}`;
-  if(id==='fmea')             return `<button class="btn btn-primary" onclick="addFMEARow()"><i class="fa-solid fa-plus"></i> Add Row</button><button class="btn btn-green" onclick="exportFMEA()"><i class="fa-solid fa-table"></i> Export CSV</button>${base}`;
-  if(id==='five-why')         return `<button class="btn btn-primary" onclick="analyseChain()"><i class="fa-solid fa-magnifying-glass"></i> Analyse Chain</button>${base}`;
-  if(id==='effort-benefit')   return `<button class="btn btn-primary" onclick="addEBSolution()"><i class="fa-solid fa-plus"></i> Add Solution</button><button class="btn btn-secondary" onclick="renderMatrix()"><i class="fa-solid fa-rotate"></i> Refresh Matrix</button>${base}`;
-  if(id==='control-chart')    return `<button class="btn btn-primary" onclick="updateChart()"><i class="fa-solid fa-chart-line"></i> Plot Chart</button><button class="btn btn-green" onclick="exportChartCSV()"><i class="fa-solid fa-table"></i> Export CSV</button>${base}`;
-  if(id==='monitoring-plan')  return `<button class="btn btn-primary" onclick="addMonRow()"><i class="fa-solid fa-plus"></i> Add KPI</button><button class="btn btn-green" onclick="exportMon()"><i class="fa-solid fa-table"></i> Export CSV</button>${base}`;
-  if(id==='benefit-calc')     return `<button class="btn btn-primary" onclick="addBenLine()"><i class="fa-solid fa-plus"></i> Add Benefit</button><button class="btn btn-green" onclick="exportBenCalc()"><i class="fa-solid fa-table"></i> Export CSV</button>${base}`;
-  if(id==='action-log')       return `<button class="btn btn-primary" onclick="addAction()"><i class="fa-solid fa-plus"></i> Add Action</button><button class="btn btn-green" onclick="exportActions()"><i class="fa-solid fa-table"></i> Export CSV</button>${base}`;
-  return base;
+  const X   = `<button class="btn btn-secondary" onclick="closeModal()"><i class="fa-solid fa-xmark"></i> Close</button>`;
+  const PDF = (fn) => `<button class="btn btn-orange" onclick="${fn}"><i class="fa-solid fa-file-pdf"></i> PDF</button>`;
+  const CSV = (fn) => `<button class="btn btn-green"  onclick="${fn}"><i class="fa-solid fa-table"></i> CSV</button>`;
+  const ADD = (lbl,fn) => `<button class="btn btn-primary" onclick="${fn}"><i class="fa-solid fa-plus"></i> ${lbl}</button>`;
+  if(id==='project-charter')  return PDF('pdfExport("project-charter")')+CSV('exportCharterCSV()')+X;
+  if(id==='sipoc')            return PDF('pdfExport("sipoc")')+CSV('exportSIPOC()')+X;
+  if(id==='stakeholder')      return ADD('Add Stakeholder','addStakeholder()')+PDF('pdfExport("stakeholder")')+CSV('exportStakeholders()')+X;
+  if(id==='risk-analysis')    return ADD('Add Risk','addRisk()')+PDF('pdfExport("risk-analysis")')+CSV('exportRisks()')+X;
+  if(id==='project-review')   return PDF('pdfExport("project-review")')+CSV('exportProjectReview()')+X;
+  if(id==='define-checklist') return PDF('pdfExport("define-checklist")')+X;
+  if(id==='op-definition')    return ADD('Add Definition','addOpDef()')+PDF('pdfExport("op-definition")')+CSV('exportOpDefs()')+X;
+  if(id==='comm-plan')        return ADD('Add Row','addCommRow()')+PDF('pdfExport("comm-plan")')+CSV('exportCommPlan()')+X;
+  if(id==='fishbone')         return `<button class="btn btn-primary" onclick="drawFishbone()"><i class="fa-solid fa-wand-magic-sparkles"></i> Generate</button>`+PDF('pdfExport("fishbone")')+`<button class="btn btn-secondary" onclick="exportFishSVG()"><i class="fa-solid fa-image"></i> SVG</button>`+X;
+  if(id==='fmea')             return ADD('Add Row','addFMEARow()')+PDF('pdfExport("fmea")')+CSV('exportFMEA()')+X;
+  if(id==='five-why')         return `<button class="btn btn-primary" onclick="analyseChain()"><i class="fa-solid fa-magnifying-glass"></i> Analyse Chain</button>`+PDF('pdfExport("five-why")')+X;
+  if(id==='effort-benefit')   return ADD('Add Solution','addEBSolution()')+`<button class="btn btn-secondary" onclick="renderMatrix()"><i class="fa-solid fa-rotate"></i> Refresh</button>`+PDF('pdfExport("effort-benefit")')+X;
+  if(id==='control-chart')    return `<button class="btn btn-primary" onclick="updateChart()"><i class="fa-solid fa-chart-line"></i> Plot</button>`+PDF('pdfExport("control-chart")')+CSV('exportChartCSV()')+X;
+  if(id==='monitoring-plan')  return ADD('Add KPI','addMonRow()')+PDF('pdfExport("monitoring-plan")')+CSV('exportMon()')+X;
+  if(id==='benefit-calc')     return ADD('Add Benefit','addBenLine()')+PDF('pdfExport("benefit-calc")')+CSV('exportBenCalc()')+X;
+  if(id==='action-log')       return ADD('Add Action','addAction()')+PDF('pdfExport("action-log")')+CSV('exportActions()')+X;
+  return X;
 }
 
 /* ─── PROJECT CHARTER ─── */
@@ -1600,6 +1619,788 @@ function exportActions(){
     rows.push([idx+1,...[...tr.querySelectorAll('input,select')].map(x=>x.value)]);
   });
   downloadCSV('action-log.csv', rows);
+}
+
+
+/* shorthand to safely get element value */
+function gv(id){ const el=document.getElementById(id); return el?el.value:''; }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   UNIVERSAL PDF EXPORT ENGINE  —  pdfExport(toolId)
+   Requires: jsPDF 2.x  (already loaded via CDN)
+════════════════════════════════════════════════════════════════════════ */
+function pdfExport(toolId){
+  if(!window.jspdf){ alert('PDF library not loaded yet — please try again in a moment.'); return; }
+  try {
+    _doPdfExport(toolId);
+  } catch(err) {
+    console.error('PDF export error:', err);
+    alert('PDF export failed: ' + err.message);
+  }
+}
+
+function _doPdfExport(toolId){
+  var jsPDF = window.jspdf.jsPDF;
+  var doc   = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
+
+  /* ── constants ── */
+  var W=210, ML=14, MR=196, TW=182;
+  var NAVY=[15,28,56], ORANGE=[244,114,43], WHITE=[255,255,255];
+  var LIGHT=[240,244,252], DARK=[30,45,80];
+  var tool  = TOOLS[toolId] || {};
+  var title = tool.title || toolId;
+  var now   = new Date().toLocaleString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+  var y     = 42;
+
+  /* ── page 1 header ── */
+  function drawFirstHeader(){
+    doc.setFillColor(NAVY[0],NAVY[1],NAVY[2]);
+    doc.rect(0,0,W,32,'F');
+    doc.setFillColor(ORANGE[0],ORANGE[1],ORANGE[2]);
+    doc.rect(0,30,W,3,'F');
+
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(9);
+    doc.setTextColor(WHITE[0],WHITE[1],WHITE[2]);
+    doc.text('CuriousToSolve', ML, 11);
+
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(6.5);
+    doc.setTextColor(160,180,220);
+    doc.text('Six Sigma Toolkit', ML, 16);
+
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(15);
+    doc.setTextColor(WHITE[0],WHITE[1],WHITE[2]);
+    doc.text(title.toUpperCase(), ML, 25);
+
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(7);
+    doc.setTextColor(160,180,220);
+    doc.text('Exported: '+now, MR, 11, {align:'right'});
+  }
+
+  /* ── continuation page header ── */
+  function drawContHeader(){
+    doc.setFillColor(NAVY[0],NAVY[1],NAVY[2]);
+    doc.rect(0,0,W,14,'F');
+    doc.setFillColor(ORANGE[0],ORANGE[1],ORANGE[2]);
+    doc.rect(0,13,W,1.5,'F');
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(7);
+    doc.setTextColor(WHITE[0],WHITE[1],WHITE[2]);
+    doc.text(title.toUpperCase(), ML, 9);
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(6);
+    doc.setTextColor(160,180,220);
+    doc.text('CuriousToSolve · Six Sigma Toolkit', MR, 9, {align:'right'});
+  }
+
+  /* ── footer (called at end, loops all pages) ── */
+  function drawFooters(){
+    var pages = doc.internal.getNumberOfPages();
+    for(var p=1; p<=pages; p++){
+      doc.setPage(p);
+      doc.setFillColor(NAVY[0],NAVY[1],NAVY[2]);
+      doc.rect(0,287,W,10,'F');
+      doc.setFont('helvetica','normal');
+      doc.setFontSize(6);
+      doc.setTextColor(160,180,220);
+      doc.text('CuriousToSolve · Six Sigma Toolkit · '+title, ML, 293);
+      doc.text('Page '+p+' of '+pages, MR, 293, {align:'right'});
+    }
+  }
+
+  /* ── new page helper ── */
+  function newPage(){
+    doc.addPage();
+    drawContHeader();
+    y = 22;
+  }
+  function checkY(need){ if(y + need > 278) newPage(); }
+
+  /* ── section heading ── */
+  function secHead(txt){
+    checkY(12);
+    doc.setFillColor(NAVY[0],NAVY[1],NAVY[2]);
+    doc.roundedRect(ML, y, TW, 7, 1.2, 1.2, 'F');
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(7.5);
+    doc.setTextColor(WHITE[0],WHITE[1],WHITE[2]);
+    doc.text(txt.toUpperCase(), ML+3, y+5);
+    y += 11;
+  }
+
+  /* ── key-value row ── */
+  function kvRow(label, value, shade){
+    var val   = String(value||'—');
+    var lines = doc.splitTextToSize(val, TW-52);
+    var h     = Math.max(7, lines.length*4.5+2);
+    checkY(h);
+    if(shade){ doc.setFillColor(LIGHT[0],LIGHT[1],LIGHT[2]); doc.rect(ML,y,TW,h,'F'); }
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(7.5);
+    doc.setTextColor(DARK[0],DARK[1],DARK[2]);
+    doc.text(label+':', ML+2, y+5);
+    doc.setFont('helvetica','normal');
+    doc.setTextColor(50,65,100);
+    doc.text(lines, ML+54, y+5);
+    y += h;
+  }
+
+  /* ── table ── */
+  function drawTable(headers, rows2d){
+    checkY(16);
+    var colW = TW / headers.length;
+
+    /* header */
+    doc.setFillColor(NAVY[0],NAVY[1],NAVY[2]);
+    doc.rect(ML,y,TW,8,'F');
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(6.5);
+    doc.setTextColor(WHITE[0],WHITE[1],WHITE[2]);
+    headers.forEach(function(h,i){ doc.text(String(h), ML+i*colW+2, y+5.5); });
+    y += 8;
+
+    rows2d.forEach(function(row, ri){
+      var cellLines = row.map(function(cell){
+        return doc.splitTextToSize(String(cell==null?'—':cell), colW-4);
+      });
+      var maxL = Math.max.apply(null, cellLines.map(function(l){ return l.length; }));
+      var rowH = Math.max(7, maxL*4.2+2);
+      checkY(rowH);
+
+      /* row background */
+      if(ri%2===0){ doc.setFillColor(LIGHT[0],LIGHT[1],LIGHT[2]); }
+      else         { doc.setFillColor(255,255,255); }
+      doc.rect(ML,y,TW,rowH,'F');
+
+      /* colour stripe for Risk Level column */
+      var rli = headers.indexOf('Risk Level');
+      if(rli>=0){
+        var lvl = String(row[rli]||'');
+        var sc  = lvl==='High'?[239,68,68]:lvl==='Medium'?[245,158,11]:[45,212,160];
+        doc.setFillColor(sc[0],sc[1],sc[2]);
+        doc.rect(ML,y,2.5,rowH,'F');
+      }
+      /* colour stripe for Status column */
+      var sti = headers.indexOf('Status');
+      if(sti>=0){
+        var sv  = String(row[sti]||'');
+        var scc = (sv==='Complete'||sv==='Pass'||sv==='Approved')?[45,212,160]:
+                  (sv==='Blocked'||sv==='Fail'||sv==='Rejected')?[239,68,68]:[245,158,11];
+        doc.setFillColor(scc[0],scc[1],scc[2]);
+        doc.rect(ML,y,2.5,rowH,'F');
+      }
+
+      /* cell text */
+      doc.setFont('helvetica','normal');
+      doc.setFontSize(6.5);
+      doc.setTextColor(50,65,100);
+      cellLines.forEach(function(lines,ci){
+        doc.text(lines, ML+ci*colW+3, y+5);
+      });
+
+      /* grid */
+      doc.setDrawColor(210,218,235);
+      doc.setLineWidth(0.18);
+      doc.rect(ML,y,TW,rowH);
+      headers.forEach(function(_,i){ if(i>0) doc.line(ML+i*colW,y,ML+i*colW,y+rowH); });
+      y += rowH;
+    });
+    y += 4;
+  }
+
+  /* ════════════════ DRAW FIRST PAGE HEADER ════════════════ */
+  drawFirstHeader();
+
+  /* ════════════════ TOOL CONTENT ════════════════ */
+  if(toolId==='project-charter'){
+    secHead('Project Identification');
+    kvRow('Project Title', gv('pc-title'), true);
+    kvRow('Sponsor',       gv('pc-sponsor'), false);
+    kvRow('Leader',        gv('pc-leader'), true);
+    kvRow('Department',    gv('pc-dept'), false);
+    secHead('Problem & Goal');
+    kvRow('Problem Statement', gv('pc-problem'), true);
+    kvRow('Goal Statement',    gv('pc-goal'), false);
+    kvRow('Business Impact',   gv('pc-impact'), true);
+    secHead('Scope & Timeline');
+    kvRow('In Scope',       gv('pc-inscope'), true);
+    kvRow('Out of Scope',   gv('pc-outscope'), false);
+    kvRow('Start Date',     gv('pc-start'), true);
+    kvRow('Target Date',    gv('pc-end'), false);
+    secHead('Team & Milestones');
+    kvRow('Team Members',   gv('pc-team'), true);
+    kvRow('Key Milestones', gv('pc-milestones'), false);
+  }
+
+  else if(toolId==='sipoc'){
+    secHead('SIPOC Diagram — '+(gv('sipoc-process')||''));
+    var sipocRows = [];
+    document.querySelectorAll('#sipoc-body tr').forEach(function(tr){
+      sipocRows.push([].slice.call(tr.querySelectorAll('input')).map(function(inp){ return inp.value; }));
+    });
+    drawTable(['Suppliers','Inputs','Process','Outputs','Customers'], sipocRows);
+  }
+
+  else if(toolId==='stakeholder'){
+    secHead('Stakeholder Analysis');
+    drawTable(
+      ['#','Name','Dept','Power','Interest','Strategy','Notes'],
+      _stakes.map(function(s,i){ return [i+1,s.name,s.dept,s.power,s.interest,s.strategy,s.notes]; })
+    );
+  }
+
+  else if(toolId==='risk-analysis'){
+    secHead('Risk Analysis Matrix');
+    drawTable(
+      ['#','Risk Description','Category','L','I','Score','Risk Level','Mitigation','Owner','Status'],
+      _risks.map(function(r,i){
+        var sc = (r.likelihood||0)*(r.impact||0);
+        return [i+1,r.desc,r.category,r.likelihood,r.impact,sc,sc>=15?'High':sc>=9?'Medium':'Low',r.mitigation,r.owner,r.status];
+      })
+    );
+  }
+
+  else if(toolId==='project-review'){
+    secHead('Project Review Summary');
+    kvRow('Project',      gv('pr-name'), true);
+    kvRow('Phase',        gv('pr-phase'), false);
+    kvRow('Review Date',  gv('pr-date'), true);
+    kvRow('Reviewer',     gv('pr-reviewer'), false);
+    var prRows = [];
+    document.querySelectorAll('.pr-item').forEach(function(row){
+      var cb  = row.querySelector('input[type=checkbox]');
+      var lbl = row.querySelector('label');
+      if(cb && lbl) prRows.push([row.dataset.cat||'', lbl.textContent.trim(), cb.checked?'Done':'Pending']);
+    });
+    if(prRows.length){ secHead('Checklist'); drawTable(['Category','Deliverable','Status'], prRows); }
+    secHead('Comments');
+    kvRow('Issues / Remarks', gv('pr-comments'), true);
+  }
+
+  else if(toolId==='define-checklist'){
+    secHead('Define Phase Exit Checklist');
+    var dclRows = [];
+    document.querySelectorAll('.dcl-item').forEach(function(row){
+      var cb  = row.querySelector('input[type=checkbox]');
+      var lbl = row.querySelector('label');
+      if(cb && lbl) dclRows.push([row.dataset.cat||'', lbl.textContent.trim(), cb.checked?'✓':'—']);
+    });
+    drawTable(['Category','Checklist Item','Done'], dclRows);
+  }
+
+  else if(toolId==='op-definition'){
+    secHead('Operational Definitions');
+    drawTable(
+      ['#','Metric','Definition','Unit','Method','Target','Type','Owner'],
+      _opDefs.map(function(d,i){ return [i+1,d.metric,d.definition,d.unit,d.method,d.target,d.dataType,d.owner]; })
+    );
+  }
+
+  else if(toolId==='comm-plan'){
+    secHead('Communication Plan');
+    kvRow('Project', gv('cp-project'), true);
+    secHead('Communication Matrix');
+    drawTable(
+      ['#','Stakeholder','Comm. Type','Frequency','Channel','Owner','Notes'],
+      _commRows.map(function(r,i){ return [i+1,r.stakeholder,r.type,r.frequency,r.channel,r.owner,r.notes]; })
+    );
+  }
+
+  else if(toolId==='five-why'){
+    secHead('5 Why — Root Cause Chain');
+    kvRow('Problem Statement', gv('wy-prob'), true);
+    [1,2,3,4,5].forEach(function(n,i){
+      var val = (document.getElementById('wy-'+n)||{value:''}).value||'';
+      if(val) kvRow('Why #'+n+(n===5?' (Root Cause)':''), val, i%2===0);
+    });
+  }
+
+  else if(toolId==='fishbone'){
+    secHead('Fishbone (Ishikawa) Diagram');
+    kvRow('Problem / Effect', gv('fb-effect'), true);
+    var fbRows = [];
+    fbCats.forEach(function(cat){
+      var inputs = [].slice.call(document.querySelectorAll('#fb-'+cat+' input'));
+      inputs.forEach(function(inp){ if(inp.value) fbRows.push([cat, inp.value]); });
+    });
+    if(fbRows.length) drawTable(['Category','Cause'], fbRows);
+  }
+
+  else if(toolId==='fmea'){
+    secHead('FMEA — Failure Mode & Effects Analysis');
+    var fmeaR = [];
+    document.querySelectorAll('#fmea-body tr').forEach(function(tr,i){
+      var cells = [].slice.call(tr.querySelectorAll('input,select,textarea')).map(function(el){ return el.value; });
+      if(cells.length) fmeaR.push([i+1].concat(cells.slice(0,7)));
+    });
+    if(fmeaR.length) drawTable(['#','Process Step','Failure Mode','Effect','S','O','D','RPN'], fmeaR);
+  }
+
+  else if(toolId==='effort-benefit'){
+    secHead('Effort vs Benefit Matrix');
+    var ebR = [];
+    document.querySelectorAll('#eb-list .eb-row').forEach(function(row,i){
+      var inps = [].slice.call(row.querySelectorAll('input,select')).map(function(el){ return el.value; });
+      if(inps.length) ebR.push([i+1].concat(inps));
+    });
+    if(ebR.length) drawTable(['#','Solution','Effort','Benefit'], ebR);
+  }
+
+  else if(toolId==='control-chart'){
+    secHead('Control Chart (I-MR)');
+    kvRow('Process / KPI', gv('cc-name'), true);
+    kvRow('Data Points',   gv('cc-data'), false);
+  }
+
+  else if(toolId==='monitoring-plan'){
+    secHead('Monitoring & Reaction Plan');
+    kvRow('Process',    gv('mon-proc'), true);
+    kvRow('Plan Owner', gv('mon-own'), false);
+    secHead('KPI Table');
+    drawTable(
+      ['#','KPI','Target','UCL','LCL','Freq','Owner'],
+      _monRows.map(function(r,i){ return [i+1,r.kpi,r.target,r.ucl,r.lcl,r.freq,r.owner]; })
+    );
+  }
+
+  else if(toolId==='benefit-calc'){
+    secHead('Benefit Calculation');
+    drawTable(
+      ['#','Category','Description','Monthly','Months','Total'],
+      _benLines.map(function(r,i){ return [i+1,r.cat,r.desc,r.monthly,r.months,r.monthly*r.months]; })
+    );
+    var hard = _benLines.filter(function(r){ return r.cat==='Hard'; }).reduce(function(a,r){ return a+r.monthly*r.months; },0);
+    var soft = _benLines.filter(function(r){ return r.cat==='Soft'; }).reduce(function(a,r){ return a+r.monthly*r.months; },0);
+    secHead('Totals');
+    kvRow('Hard Benefits',  '£'+hard.toLocaleString(), true);
+    kvRow('Soft Benefits',  '£'+soft.toLocaleString(), false);
+    kvRow('Total Benefits', '£'+(hard+soft).toLocaleString(), true);
+  }
+
+  else if(toolId==='action-log'){
+    secHead('Action Item Log');
+    drawTable(
+      ['#','Action','Owner','Due','Priority','Phase','Status'],
+      _actionItems.map(function(a,i){ return [i+1,a.action,a.owner,a.due,a.priority,a.phase,a.status]; })
+    );
+  }
+
+  else {
+    /* generic fallback */
+    secHead('Tool Data');
+    var n=0;
+    document.querySelectorAll('.modal-body input[id], .modal-body textarea[id]').forEach(function(el){
+      if(el.value) kvRow(el.id, el.value, n++%2===0);
+    });
+  }
+
+  /* ════════════════ FOOTER ON ALL PAGES ════════════════ */
+  drawFooters();
+  doc.save(toolId+'-report.pdf');
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   NEW TOOL: RISK ANALYSIS MATRIX
+════════════════════════════════════════════════════════════════════════ */
+let _risks = [
+  {desc:'Scope creep',           category:'Scope',     likelihood:4, impact:4, mitigation:'Formal change control',         owner:'PM',    status:'Open'},
+  {desc:'Key resource gap',      category:'Resource',  likelihood:3, impact:5, mitigation:'Cross-train backup',             owner:'Sponsor',status:'Open'},
+  {desc:'Data quality issues',   category:'Data',      likelihood:4, impact:3, mitigation:'Validate sources in Measure',    owner:'BB',    status:'Mitigated'},
+  {desc:'Stakeholder resistance',category:'People',    likelihood:2, impact:4, mitigation:'Engagement plan + comms',        owner:'Lead',  status:'Open'},
+];
+const RAG_COLORS = { High:'#ef4444', Medium:'#f59e0b', Low:'#2dd4a0' };
+
+function tmplRiskAnalysis(){
+  const rows = _risks.map((r,i) => riskRow(r,i)).join('');
+  return `
+  <p style="font-size:.78rem;color:var(--text3);margin-bottom:10px">
+    Risk Score = Likelihood × Impact &nbsp;|&nbsp;
+    <span style="color:#ef4444;font-weight:700">■ High 15–25</span> &nbsp;
+    <span style="color:#f59e0b;font-weight:700">■ Medium 9–14</span> &nbsp;
+    <span style="color:#2dd4a0;font-weight:700">■ Low 1–8</span>
+  </p>
+  <div class="tbl-wrap">
+    <table class="data-table">
+      <thead><tr>
+        <th>#</th><th>Risk Description</th><th>Category</th>
+        <th>Likelihood<br/><small style="font-weight:400;color:var(--text3)">1–5</small></th>
+        <th>Impact<br/><small style="font-weight:400;color:var(--text3)">1–5</small></th>
+        <th>Score</th><th>Level</th><th>Mitigation Action</th><th>Owner</th><th>Status</th>
+      </tr></thead>
+      <tbody id="risk-body">${rows}</tbody>
+    </table>
+  </div>
+  <div class="output-box" style="margin-top:14px">
+    <div style="font-size:.72rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px">
+      Risk Heatmap (Likelihood × Impact)
+    </div>
+    <div id="risk-heatmap"></div>
+  </div>`;
+}
+
+function riskRow(r, i){
+  const sc = (r.likelihood||0)*(r.impact||0);
+  const lvl = sc>=15?'High':sc>=9?'Medium':'Low';
+  const col = RAG_COLORS[lvl];
+  const cats = ['Scope','Resource','Technical','Schedule','People','Data','Finance'];
+  const catOpts = cats.map(c=>`<option ${r.category===c?'selected':''}>${c}</option>`).join('');
+  const statOpts = ['Open','Mitigated','Closed','Accepted'].map(s=>`<option ${r.status===s?'selected':''}>${s}</option>`).join('');
+  return `<tr id="rr-${i}">
+    <td style="color:var(--text3);font-size:.78rem">${i+1}</td>
+    <td><input class="cell-input" value="${r.desc}" style="min-width:140px" oninput="_risks[${i}].desc=this.value"/></td>
+    <td><select class="cell-input ci-sel" onchange="_risks[${i}].category=this.value">${catOpts}</select></td>
+    <td><input class="cell-input" type="number" min="1" max="5" value="${r.likelihood}" style="width:46px;text-align:center"
+         oninput="_risks[${i}].likelihood=+this.value;refreshRisk(${i})"/></td>
+    <td><input class="cell-input" type="number" min="1" max="5" value="${r.impact}" style="width:46px;text-align:center"
+         oninput="_risks[${i}].impact=+this.value;refreshRisk(${i})"/></td>
+    <td id="rsc-${i}" style="font-weight:800;font-size:1rem;color:${col}">${sc||'—'}</td>
+    <td id="rlv-${i}"><span style="display:inline-block;padding:3px 10px;border-radius:20px;font-size:.72rem;font-weight:700;
+        background:${col}22;color:${col};border:1px solid ${col}55">${lvl}</span></td>
+    <td><input class="cell-input" value="${r.mitigation}" style="min-width:150px" oninput="_risks[${i}].mitigation=this.value"/></td>
+    <td><input class="cell-input" value="${r.owner}" style="width:80px" oninput="_risks[${i}].owner=this.value"/></td>
+    <td><select class="cell-input ci-sel" onchange="_risks[${i}].status=this.value">${statOpts}</select></td>
+  </tr>`;
+}
+
+function refreshRisk(i){
+  const r = _risks[i];
+  const sc = (r.likelihood||0)*(r.impact||0);
+  const lvl = sc>=15?'High':sc>=9?'Medium':'Low';
+  const col = RAG_COLORS[lvl];
+  const sc_el  = document.getElementById('rsc-'+i);
+  const lvl_el = document.getElementById('rlv-'+i);
+  if(sc_el){  sc_el.textContent = sc||'—'; sc_el.style.color = col; }
+  if(lvl_el){ lvl_el.innerHTML = `<span style="display:inline-block;padding:3px 10px;border-radius:20px;font-size:.72rem;font-weight:700;background:${col}22;color:${col};border:1px solid ${col}55">${lvl}</span>`; }
+  renderRiskHeatmap();
+}
+
+function renderRiskHeatmap(){
+  const el = document.getElementById('risk-heatmap');
+  if(!el) return;
+  let html = `<div style="display:grid;grid-template-columns:32px repeat(5,1fr);grid-template-rows:auto repeat(5,46px);gap:3px;font-size:.65rem">`;
+  html += `<div></div>`;
+  for(let imp=1;imp<=5;imp++) html += `<div style="text-align:center;color:var(--text3);font-weight:700;padding-bottom:4px">Impact ${imp}</div>`;
+  for(let lik=5;lik>=1;lik--){
+    html += `<div style="display:flex;align-items:center;justify-content:flex-end;padding-right:5px;color:var(--text3);font-weight:700">L${lik}</div>`;
+    for(let imp=1;imp<=5;imp++){
+      const sc = lik*imp;
+      const bg = sc>=15?'rgba(239,68,68,.22)':sc>=9?'rgba(245,158,11,.2)':'rgba(45,212,160,.15)';
+      const bdr= sc>=15?'rgba(239,68,68,.5)':sc>=9?'rgba(245,158,11,.45)':'rgba(45,212,160,.4)';
+      const hits = _risks.filter(r=>+r.likelihood===lik&&+r.impact===imp);
+      const dots = hits.map((r,idx)=>`<div title="${r.desc}" style="width:20px;height:20px;border-radius:50%;background:#4f8ef7;
+          display:inline-flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:800;color:#fff;
+          margin:1px;cursor:default;border:2px solid rgba(255,255,255,.3)">${idx+1}</div>`).join('');
+      html += `<div style="background:${bg};border:1px solid ${bdr};border-radius:6px;display:flex;align-items:center;
+          justify-content:center;flex-wrap:wrap;gap:1px;padding:3px">${dots||`<span style="color:rgba(255,255,255,.18)">${sc}</span>`}</div>`;
+    }
+  }
+  html += `</div>`;
+  el.innerHTML = html;
+}
+
+function addRisk(){
+  const i = _risks.length;
+  _risks.push({desc:'New risk',category:'Scope',likelihood:2,impact:2,mitigation:'',owner:'',status:'Open'});
+  document.getElementById('risk-body').insertAdjacentHTML('beforeend', riskRow(_risks[i],i));
+  renderRiskHeatmap();
+}
+function exportRisks(){
+  const rows = [['#','Risk','Category','Likelihood','Impact','Score','Level','Mitigation','Owner','Status']];
+  _risks.forEach((r,i)=>{
+    const sc=(r.likelihood||0)*(r.impact||0);
+    rows.push([i+1,r.desc,r.category,r.likelihood,r.impact,sc,sc>=15?'High':sc>=9?'Medium':'Low',r.mitigation,r.owner,r.status]);
+  });
+  downloadCSV('risk-analysis.csv',rows);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   NEW TOOL: PROJECT REVIEW (GATE CHECK)
+════════════════════════════════════════════════════════════════════════ */
+const PR_SECTIONS = {
+  'Charter & Problem':   ['Project Charter signed and approved by sponsor','Problem statement is specific and quantified (no solution embedded)','Goal statement is SMART with baseline and target'],
+  'Scope & Team':        ['Project scope documented (in-scope and out-of-scope)','Team assembled with belt-level roles assigned','Time commitments and RACI agreed'],
+  'Process & Customers': ['SIPOC diagram completed','Key customers and CTQs identified','High-level process map exists'],
+  'Stakeholders':        ['All key stakeholders identified','Engagement strategy in place','Communication plan initiated'],
+  'Data & Baseline':     ['Baseline metric identified and quantified','Data collection plan started','Measurement system suitability assessed'],
+};
+
+function tmplProjectReview(){
+  let items = '';
+  let n = 0;
+  Object.entries(PR_SECTIONS).forEach(([sec, checks]) => {
+    items += `<div style="margin-top:16px">
+      <div style="font-size:.68rem;font-weight:700;color:var(--accent2);text-transform:uppercase;
+           letter-spacing:.1em;padding:7px 10px;background:rgba(79,142,247,.06);border-radius:6px;margin-bottom:8px">${sec}</div>`;
+    checks.forEach(c => {
+      items += `<div class="pr-item" data-cat="${sec}" style="display:flex;align-items:center;gap:10px;padding:8px 6px;
+                border-bottom:1px solid rgba(255,255,255,.04)">
+          <input type="checkbox" id="prx${n}" class="pr-cb"
+                 style="width:15px;height:15px;accent-color:var(--green);cursor:pointer;flex-shrink:0"
+                 onchange="updatePRScore()"/>
+          <label for="prx${n}" style="font-size:.84rem;color:var(--text2);cursor:pointer;margin:0;
+                  text-transform:none;letter-spacing:0;line-height:1.4">${c}</label>
+        </div>`;
+      n++;
+    });
+    items += `</div>`;
+  });
+
+  return `
+  <div class="form-row">
+    <div class="form-group"><label>Project Name</label><input type="text" id="pr-name" placeholder="Project title"/></div>
+    <div class="form-group"><label>Current Phase</label>
+      <select id="pr-phase" class="ci-sel">
+        <option>Define</option><option>Measure</option><option>Analyze</option><option>Improve</option><option>Control</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group"><label>Review Date</label><input type="date" id="pr-date" value="${new Date().toISOString().slice(0,10)}"/></div>
+    <div class="form-group"><label>Reviewer Name</label><input type="text" id="pr-reviewer" placeholder="Belt / Reviewer name"/></div>
+  </div>
+  <div id="pr-score-bar" style="margin:14px 0 4px"></div>
+  ${items}
+  <div class="form-group" style="margin-top:16px">
+    <label>Issues / Gate Remarks</label>
+    <textarea id="pr-comments" placeholder="Open issues, blockers, or actions required before advancing to next phase…"></textarea>
+  </div>`;
+}
+
+function updatePRScore(){
+  const all  = document.querySelectorAll('.pr-cb');
+  const done = [...all].filter(c=>c.checked).length;
+  const pct  = Math.round(done/all.length*100);
+  const col  = pct===100?'var(--green)':pct>=70?'var(--accent)':pct>=40?'var(--yellow)':'var(--red)';
+  const msg  = pct===100?'✓ Gate Review PASSED — ready to advance':'Complete remaining items before advancing';
+  const bar  = document.getElementById('pr-score-bar');
+  if(!bar) return;
+  bar.innerHTML = `
+    <div style="background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:14px 18px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <span style="font-size:.75rem;font-weight:700;color:var(--text2)">${done} / ${all.length} items complete</span>
+        <span style="font-size:1.4rem;font-weight:800;color:${col}">${pct}%</span>
+      </div>
+      <div style="height:6px;background:var(--surface2);border-radius:3px;overflow:hidden">
+        <div style="height:100%;width:${pct}%;background:${col};border-radius:3px;transition:width .4s"></div>
+      </div>
+      <div style="font-size:.75rem;color:${col};font-weight:600;margin-top:8px">${msg}</div>
+    </div>`;
+}
+
+function exportProjectReview(){
+  const rows = [['Category','Deliverable','Status']];
+  document.querySelectorAll('.pr-item').forEach(row => {
+    const cb  = row.querySelector('input[type=checkbox]');
+    const lbl = row.querySelector('label');
+    if(cb&&lbl) rows.push([row.dataset.cat, lbl.textContent.trim(), cb.checked?'Done':'Pending']);
+  });
+  rows.push(['','Comments', gv('pr-comments')]);
+  downloadCSV('project-review.csv', rows);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   NEW TOOL: DEFINE PHASE CHECKLIST
+════════════════════════════════════════════════════════════════════════ */
+const DCL_ITEMS = [
+  {cat:'Charter',     text:'Project Charter drafted and signed off by Sponsor'},
+  {cat:'Charter',     text:'Business case quantified with financial or operational impact'},
+  {cat:'Charter',     text:'Project title, leader, belt level, and department documented'},
+  {cat:'Problem',     text:'Problem statement written (specific, quantified, no solution)'},
+  {cat:'Problem',     text:'Goal statement is SMART with a clear baseline and target'},
+  {cat:'Problem',     text:'Root cause NOT assumed in problem or goal statement'},
+  {cat:'Scope',       text:'In-scope boundaries clearly defined'},
+  {cat:'Scope',       text:'Out-of-scope items documented to prevent scope creep'},
+  {cat:'Scope',       text:'Project scope is achievable within the stated timeline'},
+  {cat:'Team',        text:'All team members identified with roles and belt levels'},
+  {cat:'Team',        text:'Time commitments agreed (% availability per team member)'},
+  {cat:'Team',        text:'Meeting cadence and governance established'},
+  {cat:'Process',     text:'SIPOC diagram completed and reviewed'},
+  {cat:'Process',     text:'High-level process map or value stream identified'},
+  {cat:'Process',     text:'Key customers and Voice of Customer (CTQs) captured'},
+  {cat:'Stakeholders',text:'All key stakeholders identified and analysed (power/interest)'},
+  {cat:'Stakeholders',text:'Engagement strategy agreed for high-power stakeholders'},
+  {cat:'Stakeholders',text:'Communication plan initiated'},
+];
+
+function tmplDefineChecklist(){
+  const bycat = {};
+  DCL_ITEMS.forEach(item => { if(!bycat[item.cat]) bycat[item.cat]=[];  bycat[item.cat].push(item.text); });
+  let html = `<div id="dcl-progress" style="margin-bottom:16px"></div>`;
+  let n = 0;
+  Object.entries(bycat).forEach(([cat, items]) => {
+    html += `<div style="margin-bottom:14px">
+      <div style="font-size:.68rem;font-weight:700;color:var(--accent2);text-transform:uppercase;
+           letter-spacing:.1em;padding:7px 10px;background:rgba(79,142,247,.06);border-radius:6px;margin-bottom:6px">${cat}</div>`;
+    items.forEach(text => {
+      html += `<div class="dcl-item" data-cat="${cat}" style="display:flex;align-items:center;gap:10px;padding:8px 6px;
+                border-bottom:1px solid rgba(255,255,255,.04)">
+          <input type="checkbox" id="dcl${n}" class="dcl-cb"
+                 style="width:15px;height:15px;accent-color:var(--green);cursor:pointer;flex-shrink:0"
+                 onchange="updateChecklistScore()"/>
+          <label for="dcl${n}" style="font-size:.84rem;color:var(--text2);cursor:pointer;margin:0;
+                  text-transform:none;letter-spacing:0;line-height:1.4">${text}</label>
+        </div>`;
+      n++;
+    });
+    html += `</div>`;
+  });
+  return html;
+}
+
+function updateChecklistScore(){
+  const all  = document.querySelectorAll('.dcl-cb');
+  const done = [...all].filter(c=>c.checked).length;
+  const pct  = Math.round(done/all.length*100);
+  const col  = pct===100?'var(--green)':pct>=70?'var(--accent)':pct>=40?'var(--yellow)':'var(--red)';
+  const ready= pct===100?'✓ Define phase complete — ready for Measure gate':
+               pct>=70?'Almost there — review remaining items':'Complete remaining items before the gate review';
+  const prog = document.getElementById('dcl-progress');
+  if(!prog) return;
+  prog.innerHTML = `
+    <div style="background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:14px 18px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <span style="font-size:.75rem;font-weight:700;color:var(--text2)">Define Completion</span>
+        <span style="font-size:1.6rem;font-weight:800;color:${col}">${pct}%</span>
+      </div>
+      <div style="height:8px;background:var(--surface2);border-radius:4px;overflow:hidden">
+        <div style="height:100%;width:${pct}%;background:${col};border-radius:4px;transition:width .4s"></div>
+      </div>
+      <div style="font-size:.75rem;color:${col};font-weight:600;margin-top:8px">${ready}</div>
+    </div>`;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   NEW TOOL: OPERATIONAL DEFINITION BUILDER
+════════════════════════════════════════════════════════════════════════ */
+let _opDefs = [
+  {metric:'Invoice Error Rate', definition:'Percentage of invoices containing at least one data entry error', unit:'%', method:'(Error invoices ÷ Total invoices) × 100', target:'≤ 2%', dataType:'Discrete', owner:'QA Lead'},
+  {metric:'Processing Cycle Time', definition:'Elapsed time from request receipt timestamp to final approval timestamp', unit:'Hours', method:'ERP timestamp delta: Approval time − Receipt time', target:'≤ 4 hrs', dataType:'Continuous', owner:'Process Owner'},
+];
+
+function tmplOpDefinition(){
+  return `
+  <p style="font-size:.78rem;color:var(--text3);margin-bottom:14px">
+    Operational definitions ensure every team member collects and interprets data identically.
+  </p>
+  <div class="tbl-wrap">
+    <table class="data-table">
+      <thead><tr><th>#</th><th>Metric / Term</th><th>Definition</th><th>Unit</th><th>Calculation Method</th><th>Target / Accept. Range</th><th>Data Type</th><th>Owner</th></tr></thead>
+      <tbody id="opdef-body">${_opDefs.map((d,i)=>opDefRow(d,i)).join('')}</tbody>
+    </table>
+  </div>
+  <div id="opdef-cards" style="margin-top:16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px">
+    ${_opDefs.map(opDefCard).join('')}
+  </div>`;
+}
+
+function opDefRow(d,i){
+  const dtOpts = ['Continuous','Discrete','Attribute'].map(t=>`<option ${d.dataType===t?'selected':''}>${t}</option>`).join('');
+  return `<tr>
+    <td style="color:var(--text3);font-size:.78rem">${i+1}</td>
+    <td><input class="cell-input" value="${d.metric}"     style="min-width:110px" oninput="_opDefs[${i}].metric=this.value;refreshOpCards()"/></td>
+    <td><input class="cell-input" value="${d.definition}" style="min-width:170px" oninput="_opDefs[${i}].definition=this.value;refreshOpCards()"/></td>
+    <td><input class="cell-input" value="${d.unit}"       style="width:65px"      oninput="_opDefs[${i}].unit=this.value"/></td>
+    <td><input class="cell-input" value="${d.method}"     style="min-width:160px" oninput="_opDefs[${i}].method=this.value;refreshOpCards()"/></td>
+    <td><input class="cell-input" value="${d.target}"     style="min-width:100px" oninput="_opDefs[${i}].target=this.value;refreshOpCards()"/></td>
+    <td><select class="cell-input ci-sel" onchange="_opDefs[${i}].dataType=this.value">${dtOpts}</select></td>
+    <td><input class="cell-input" value="${d.owner}"      style="min-width:90px"  oninput="_opDefs[${i}].owner=this.value"/></td>
+  </tr>`;
+}
+
+function opDefCard(d){
+  return `<div style="background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:16px">
+    <div style="font-size:.68rem;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">Operational Definition</div>
+    <div style="font-size:1rem;font-weight:800;color:var(--white);margin-bottom:10px">${d.metric}</div>
+    ${[['Definition',d.definition],['Unit',d.unit],['Calculation',d.method],['Target',d.target],['Owner',d.owner]].map(([l,val])=>`
+    <div style="display:flex;gap:8px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.05)">
+      <span style="font-size:.72rem;font-weight:700;color:var(--text3);min-width:80px;flex-shrink:0;text-transform:uppercase;letter-spacing:.06em">${l}</span>
+      <span style="font-size:.82rem;color:var(--text2)">${val||'—'}</span>
+    </div>`).join('')}
+  </div>`;
+}
+
+function refreshOpCards(){
+  const c = document.getElementById('opdef-cards');
+  if(c) c.innerHTML = _opDefs.map(opDefCard).join('');
+}
+
+function addOpDef(){
+  const i = _opDefs.length;
+  _opDefs.push({metric:'New Metric',definition:'',unit:'',method:'',target:'',dataType:'Continuous',owner:''});
+  document.getElementById('opdef-body').insertAdjacentHTML('beforeend', opDefRow(_opDefs[i],i));
+  refreshOpCards();
+}
+
+function exportOpDefs(){
+  const rows = [['#','Metric','Definition','Unit','Method','Target','Data Type','Owner'],
+    ..._opDefs.map((d,i)=>[i+1,d.metric,d.definition,d.unit,d.method,d.target,d.dataType,d.owner])];
+  downloadCSV('operational-definitions.csv', rows);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   NEW TOOL: COMMUNICATION PLAN
+════════════════════════════════════════════════════════════════════════ */
+let _commRows = [
+  {stakeholder:'Executive Sponsor',  type:'Status Update',      frequency:'Monthly',   channel:'Email + Steering Deck', owner:'Project Lead',  notes:'Include KPI dashboard'},
+  {stakeholder:'Process Team',       type:'Progress Meeting',   frequency:'Weekly',    channel:'Team Stand-up',         owner:'Black Belt',    notes:'Actions and blockers'},
+  {stakeholder:'IT Department',      type:'Technical Update',   frequency:'Ad-hoc',    channel:'Email',                  owner:'Project Lead',  notes:'System change requests'},
+  {stakeholder:'End Users',          type:'Change Communication',frequency:'Bi-weekly',channel:'Team Brief',             owner:'Team Lead',     notes:'Change impact and timeline'},
+];
+
+function tmplCommPlan(){
+  const freqOpts = ['Daily','Weekly','Bi-weekly','Monthly','Quarterly','Ad-hoc','At Milestones'];
+  const rows = _commRows.map((r,i) => commRow(r,i,freqOpts)).join('');
+  return `
+  <div class="form-row">
+    <div class="form-group"><label>Project Name</label><input type="text" id="cp-project" placeholder="Project title"/></div>
+    <div class="form-group"><label>Plan Owner</label><input type="text" id="cp-owner" placeholder="Name / Role"/></div>
+  </div>
+  <div class="tbl-wrap">
+    <table class="data-table">
+      <thead><tr>
+        <th>#</th><th>Stakeholder / Audience</th><th>Communication Type</th>
+        <th>Frequency</th><th>Channel / Medium</th><th>Owner</th><th>Notes / Key Message</th>
+      </tr></thead>
+      <tbody id="comm-body">${rows}</tbody>
+    </table>
+  </div>`;
+}
+
+function commRow(r, i, freqOpts){
+  if(!freqOpts) freqOpts = ['Daily','Weekly','Bi-weekly','Monthly','Quarterly','Ad-hoc','At Milestones'];
+  const fOpts = freqOpts.map(f=>`<option ${r.frequency===f?'selected':''}>${f}</option>`).join('');
+  return `<tr>
+    <td style="color:var(--text3);font-size:.78rem">${i+1}</td>
+    <td><input class="cell-input" value="${r.stakeholder}" style="min-width:130px" oninput="_commRows[${i}].stakeholder=this.value"/></td>
+    <td><input class="cell-input" value="${r.type}"        style="min-width:140px" oninput="_commRows[${i}].type=this.value"/></td>
+    <td><select class="cell-input ci-sel" onchange="_commRows[${i}].frequency=this.value">${fOpts}</select></td>
+    <td><input class="cell-input" value="${r.channel}"     style="min-width:120px" oninput="_commRows[${i}].channel=this.value"/></td>
+    <td><input class="cell-input" value="${r.owner}"       style="min-width:100px" oninput="_commRows[${i}].owner=this.value"/></td>
+    <td><input class="cell-input" value="${r.notes}"       style="min-width:140px" oninput="_commRows[${i}].notes=this.value"/></td>
+  </tr>`;
+}
+
+function addCommRow(){
+  const i = _commRows.length;
+  _commRows.push({stakeholder:'',type:'',frequency:'Weekly',channel:'',owner:'',notes:''});
+  document.getElementById('comm-body').insertAdjacentHTML('beforeend', commRow(_commRows[i],i));
+}
+
+function exportCommPlan(){
+  const rows = [['#','Stakeholder','Comm. Type','Frequency','Channel','Owner','Notes'],
+    ..._commRows.map((r,i)=>[i+1,r.stakeholder,r.type,r.frequency,r.channel,r.owner,r.notes])];
+  downloadCSV('communication-plan.csv', rows);
+}
+
+/* ci-sel shared style */
+document.addEventListener('DOMContentLoaded', ()=>{
+  document.querySelectorAll('.ci-sel').forEach(applySelStyle);
+});
+function applySelStyle(el){
+  el.style.cssText += 'background:var(--surface2);border:1px solid var(--border2);color:var(--text);border-radius:6px;padding:6px 8px;font-size:.8rem;font-family:\'Inter\',sans-serif;min-width:80px;';
 }
 
 /* ═══════════════════════════════════════════
