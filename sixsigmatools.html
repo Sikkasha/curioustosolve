@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 /* ══════════════════════════════════════════════
    DESIGN TOKENS — matched to CuriousToSolve
@@ -1630,13 +1631,35 @@ function gv(id){ const el=document.getElementById(id); return el?el.value:''; }
    Requires: jsPDF 2.x  (already loaded via CDN)
 ════════════════════════════════════════════════════════════════════════ */
 function pdfExport(toolId){
-  if(!window.jspdf){ alert('PDF library not loaded yet — please try again in a moment.'); return; }
-  try {
-    _doPdfExport(toolId);
-  } catch(err) {
-    console.error('PDF export error:', err);
-    alert('PDF export failed: ' + err.message);
+  if (!window.jspdf) {
+    alert("PDF library not loaded properly. Please refresh.");
+    return;
   }
+
+  const { jsPDF } = window.jspdf;
+
+  const doc = new jsPDF({
+    orientation: 'portrait',
+    unit: 'mm',
+    format: 'a4'
+  });
+
+  const content = document.getElementById("modalBody");
+
+  if (!content) {
+    alert("No content found to export!");
+    return;
+  }
+
+  doc.html(content, {
+    x: 10,
+    y: 10,
+    width: 190,
+    windowWidth: content.scrollWidth,
+    callback: function (doc) {
+      doc.save(toolId + ".pdf");
+    }
+  });
 }
 
 function _doPdfExport(toolId){
